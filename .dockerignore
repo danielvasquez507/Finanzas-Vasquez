@@ -1,0 +1,7 @@
+node_modules
+.next
+db-data
+.git
+.env
+prisma/dev.db
+prisma.config.ts.bak

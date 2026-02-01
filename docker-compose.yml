@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  app:
+    container_name: finanzas_vasquez
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # URL para la base de datos SQLite dentro del contenedor
+      - DATABASE_URL=file:/app/db_data/dev.db
+      - NODE_ENV=production
+      # Generar una cadena aleatoria segura para producción
+      - NEXTAUTH_SECRET=cambiar_esto_por_secreto_seguro_produccion
+    volumes:
+      # PERSISTENCIA: Guarda la base de datos en el servidor
+      # Mapea la carpeta local 'db-data' del servidor a una carpeta separada para evitar sobrescribir el código
+      - ./db-data:/app/db_data

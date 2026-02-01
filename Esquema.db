@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  amount      Decimal
+  category    String
+  sub         String
+  notes       String?
+  isPaid      Boolean  @default(false)
+  week        String
+  createdAt   DateTime @default(now())
+}
+
+model Recurring {
+  id      Int     @id @default(autoincrement())
+  type    String
+  name    String
+  amount  Decimal
+  owner   String
+}
+
+model Category {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  iconKey String
+  color   String
+  subs    String
+}
