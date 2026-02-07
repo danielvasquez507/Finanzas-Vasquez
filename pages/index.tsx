@@ -18,7 +18,7 @@ import {
     Moon as MoonIcon, Mouse, Paperclip, Pen, Play, Power, Radio, Search, Send,
     Server, Shield, Star, Sun as SunIcon, Tag, Terminal, Truck, Umbrella, Video, Voicemail,
     User, HeartHandshake, Accessibility, Syringe, Thermometer,
-    HardHat, Shovel, Ruler, Paintbrush, ShieldCheck, UserCog, UserCheck, Users2, Sparkles, Settings2
+    HardHat, Shovel, Ruler, Paintbrush, ShieldCheck, UserCog, UserCheck, Users2, Sparkles
 } from 'lucide-react';
 
 // ==========================================
@@ -935,17 +935,7 @@ export default function App() {
                     {/* LIST & CONCILE UNIFIED */}
                     {activeTab === 'list' && (
                         <div className="animate-in fade-in space-y-4 p-4 pb-24">
-                            <button
-                                onClick={() => setOptionPicker({
-                                    title: "Agrupar Movimientos",
-                                    options: ["Por Categoría", "Por Semana"],
-                                    onSelect: (val) => setListGroupMode(val === "Por Categoría" ? "category" : "week")
-                                })}
-                                className="fixed bottom-24 right-4 z-[60] bg-blue-600 text-white p-4 rounded-full shadow-2xl shadow-blue-500/40 active:scale-95 transition-transform"
-                                aria-label="Cambiar Agrupación"
-                            >
-                                <Settings2 size={24} strokeWidth={2.5} />
-                            </button>
+
 
                             {showListHelp && (
                                 <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-xl text-[10px] text-indigo-800 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 flex gap-2 items-center animate-in slide-in-from-top-2">
