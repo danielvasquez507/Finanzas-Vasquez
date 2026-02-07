@@ -931,7 +931,7 @@ export default function App() {
                                                             >
                                                                 {tx.isPaid ? <CheckCircle2 size={24} className="fill-green-100 dark:fill-green-900/30" /> : <div className="w-6 h-6 rounded-full border-2 border-current" />}
                                                             </button>
-                                                            <div className="text-right pointer-events-auto" onClick={() => setEditingTx(tx)}>
+                                                            <div className="text-right pointer-events-auto min-w-[70px]" onClick={() => setEditingTx(tx)}>
                                                                 <div className={`font-mono font-bold text-sm transition-all ${tx.isPaid ? 'text-slate-300' : 'text-slate-900 dark:text-white'}`}>
                                                                     ${tx.amount.toFixed(2)}
                                                                 </div>
