@@ -860,7 +860,7 @@ export default function App() {
                 <main className="flex-1 overflow-y-auto no-scrollbar relative bg-slate-50 dark:bg-slate-950/50">
                     {/* DASHBOARD */}
                     {activeTab === 'dashboard' && (
-                        <div className="pt-0 px-4 pb-6 space-y-6 animate-in fade-in">
+                        <div className="pt-4 px-4 pb-6 space-y-6 animate-in fade-in">
                             <div className="flex flex-col gap-3">
                                 <div className="bg-slate-200 dark:bg-slate-800 p-1 rounded-xl flex font-bold text-xs relative">{['week', 'month', 'year'].map(filter => (<button key={filter} onClick={() => { setDashFilter(filter); setViewDate(new Date()); }} aria-label={`Filtrar por ${filter === 'week' ? 'Semana' : filter === 'month' ? 'Mes' : 'Año'}`} title={`Ver por ${filter === 'week' ? 'semana' : filter === 'month' ? 'mes' : 'año'}`} className={`flex-1 py-2 rounded-lg transition-all capitalize ${dashFilter === filter ? 'bg-white dark:bg-slate-700 text-black dark:text-white shadow-sm' : 'text-slate-500'}`}>{filter === 'week' ? 'Semana' : filter === 'month' ? 'Mes' : 'Año'}</button>))}</div>
                                 <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-100 dark:border-slate-800"><button onClick={() => navigateTime(-1)} aria-label="Anterior" title="Anterior" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500"><ChevronLeft size={20} /></button><span className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">{getTimeLabel()}</span><button onClick={() => navigateTime(1)} aria-label="Siguiente" title="Siguiente" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500"><ChevronRight size={20} /></button></div>
@@ -880,7 +880,7 @@ export default function App() {
 
                     {/* FIJOS (RECURRENTES) */}
                     {activeTab === 'recurring' && (
-                        <div className="pt-0 px-4 pb-24 animate-in fade-in space-y-6 max-w-none mx-auto">
+                        <div className="pt-4 px-4 pb-24 animate-in fade-in space-y-6 max-w-none mx-auto">
                             <div className="flex gap-2 pb-2 overflow-x-auto no-scrollbar justify-center md:justify-start">{['all', 'Daniel', 'Gedalya'].map(t => <button key={t} onClick={() => setRecurringTab(t)} aria-label={`Filtrar por ${t}`} title={`Filtrar por ${t}`} className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap border ${recurringTab === t ? 'bg-slate-800 text-white' : 'bg-white dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-800'}`}>{t === 'all' ? 'Todos' : t}</button>)}</div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -907,7 +907,7 @@ export default function App() {
 
                     {/* INPUT */}
                     {activeTab === 'input' && (
-                        <div className="pt-0 px-4 pb-5 space-y-5 animate-in slide-in-from-right-10 h-full flex flex-col">
+                        <div className="pt-4 px-4 pb-5 space-y-5 animate-in slide-in-from-right-10 h-full flex flex-col">
                             <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-sm border border-slate-100 dark:border-slate-800 text-center">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block text-center mb-2">Monto (TC)</span>
                                 <div className="flex justify-center items-center mb-2 text-slate-800 dark:text-white">
@@ -947,7 +947,7 @@ export default function App() {
 
                     {/* LIST & CONCILE UNIFIED */}
                     {activeTab === 'list' && (
-                        <div className="animate-in fade-in space-y-4 pt-1 px-4 pb-24">
+                        <div className="animate-in fade-in space-y-4 pt-4 px-4 pb-24">
 
 
                             {showListHelp && (
@@ -1063,7 +1063,7 @@ export default function App() {
 
                     {/* SETTINGS */}
                     {activeTab === 'settings' && (
-                        <div className="pt-1 px-4 pb-4 animate-in slide-in-from-right-10">
+                        <div className="pt-4 px-4 pb-4 animate-in slide-in-from-right-10">
                             {settingsTab === 'menu' && (
                                 <div className="grid grid-cols-1 gap-3">
                                     <button onClick={() => setSettingsTab('themes')} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between group shadow-sm">
