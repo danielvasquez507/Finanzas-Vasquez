@@ -53,15 +53,27 @@ export default async function handler(
         const { id } = req.query;
         try {
             const { date, category, sub, amount, notes, isPaid } = req.body;
+            const dateObj = new Date(date);
+            const day = dateObj.getDay();
+            const diff = dateObj.getDate() - day;
+            const start = new Date(new Date(dateObj).setDate(diff));
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(new Date(start).setDate(start.getDate() + 6));
+            end.setHours(23, 59, 59, 999);
+
+            const opts: any = { month: 'short', day: 'numeric' };
+            const weekStr = `${start.toLocaleDateString('es-ES', opts)} - ${end.toLocaleDateString('es-ES', opts)}`;
+
             const updatedTx = await prisma.transaction.update({
                 where: { id: Number(id) },
                 data: {
-                    date: new Date(date),
+                    date: dateObj,
                     category,
                     sub,
                     amount: parseFloat(amount),
                     notes,
-                    isPaid
+                    isPaid,
+                    week: weekStr
                 },
             });
             res.status(200).json({ ...updatedTx, amount: Number(updatedTx.amount) });

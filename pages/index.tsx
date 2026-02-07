@@ -74,7 +74,12 @@ const getWeekRange = (date: Date) => {
 
 const formatDateRange = (start: Date, end: Date) => {
     const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
-    return `${start.toLocaleDateString('es-ES', opts)} - ${end.toLocaleDateString('es-ES', opts)}`;
+    const dateToLocal = (d: Date) => {
+        const local = new Date(d);
+        local.setMinutes(local.getMinutes() + local.getTimezoneOffset());
+        return local.toLocaleDateString('es-ES', opts);
+    };
+    return `${dateToLocal(start)} - ${dateToLocal(end)}`;
 };
 
 const ICON_LIB: any = {
