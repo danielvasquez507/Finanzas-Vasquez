@@ -1113,14 +1113,26 @@ export default function App() {
                             {settingsTab === 'themes' && (
                                 <div className="space-y-4">
                                     <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Seleccionar Tema</h3>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <button onClick={() => setDarkMode(false)} className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${!darkMode ? 'bg-white border-blue-500 shadow-xl' : 'bg-white/50 border-transparent opacity-60'}`}>
-                                            <div className="p-4 bg-orange-100 text-orange-600 rounded-2xl"><Sun size={32} /></div>
-                                            <span className="font-bold text-sm text-slate-700">Claro</span>
+                                    <div className="flex flex-col gap-3">
+                                        <button
+                                            onClick={() => setDarkMode(false)}
+                                            className={`flex items-center gap-4 p-5 rounded-3xl border-2 transition-all ${!darkMode ? 'bg-white border-blue-500 shadow-xl' : 'bg-white/50 border-slate-100 opacity-60'}`}
+                                        >
+                                            <div className="p-3 bg-orange-100 text-orange-600 rounded-2xl"><Sun size={24} /></div>
+                                            <div className="text-left">
+                                                <div className="font-bold text-sm text-slate-700">Modo Claro</div>
+                                                <div className="text-[10px] text-slate-400 font-bold uppercase">Interfaz clásica</div>
+                                            </div>
                                         </button>
-                                        <button onClick={() => setDarkMode(true)} className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${darkMode ? 'bg-slate-900 border-blue-500 shadow-xl' : 'bg-slate-900/50 border-transparent opacity-40'}`}>
-                                            <div className="p-4 bg-slate-800 text-slate-300 rounded-2xl"><Moon size={32} /></div>
-                                            <span className="font-bold text-sm text-slate-200">Oscuro</span>
+                                        <button
+                                            onClick={() => setDarkMode(true)}
+                                            className={`flex items-center gap-4 p-5 rounded-3xl border-2 transition-all ${darkMode ? 'bg-slate-900 border-blue-500 shadow-xl' : 'bg-slate-900/50 border-slate-800 opacity-40'}`}
+                                        >
+                                            <div className="p-3 bg-slate-800 text-slate-300 rounded-2xl"><Moon size={24} /></div>
+                                            <div className="text-left">
+                                                <div className="font-bold text-sm text-slate-200">Modo Oscuro</div>
+                                                <div className="text-[10px] text-slate-500 font-bold uppercase">Interfaz moderna</div>
+                                            </div>
                                         </button>
                                     </div>
                                 </div>
