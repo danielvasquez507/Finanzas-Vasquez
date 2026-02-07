@@ -353,7 +353,7 @@ export default function App() {
             sub: subCat, // Used subCat
             amount: amt,
             notes,
-            isPaid: true, // Default
+            isPaid: false, // Changed to false as per user request
             week: formatDateRange(week.start, week.end)
         };
 
