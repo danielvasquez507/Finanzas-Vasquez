@@ -43,15 +43,40 @@ export default async function handler(
             console.error(error);
             res.status(500).json({ error: 'Failed to fetch categories' });
         }
+    } else if (req.method === 'POST') {
+        const { name, iconKey, color, subs } = req.body;
+        try {
+            const newCat = await prisma.category.create({
+                data: {
+                    name,
+                    iconKey,
+                    color,
+                    subs: JSON.stringify(subs || [])
+                }
+            });
+            res.status(201).json({ ...newCat, subs: JSON.parse(newCat.subs) });
+        } catch (e) {
+            res.status(500).json({ error: 'Creation failed' });
+        }
+    } else if (req.method === 'DELETE') {
+        const { id } = req.query;
+        try {
+            await prisma.category.delete({ where: { id: String(id) } });
+            res.status(200).json({ success: true });
+        } catch (e) {
+            res.status(500).json({ error: 'Delete failed' });
+        }
     } else if (req.method === 'PUT') {
-        // Update subs or icon
-        const { id, subs, iconKey } = req.body;
+        // Update subs, icon, name, color
+        const { id, subs, iconKey, name, color } = req.body;
         try {
             const updated = await prisma.category.update({
                 where: { id },
                 data: {
                     subs: JSON.stringify(subs),
-                    iconKey
+                    iconKey,
+                    name,
+                    color
                 }
             });
             res.status(200).json({ ...updated, subs: JSON.parse(updated.subs) });
@@ -59,7 +84,7 @@ export default async function handler(
             res.status(500).json({ error: 'Update failed' });
         }
     } else {
-        res.setHeader('Allow', ['GET', 'PUT']);
+        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }

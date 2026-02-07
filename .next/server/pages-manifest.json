@@ -2,8 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/transactions": "pages/api/transactions.js",
-  "/api/categories": "pages/api/categories.js",
   "/": "pages/index.js",
-  "/api/recurring": "pages/api/recurring.js"
+  "/api/categories": "pages/api/categories.js",
+  "/api/recurring": "pages/api/recurring.js",
+  "/api/transactions": "pages/api/transactions.js"
 }

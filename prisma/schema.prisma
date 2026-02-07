@@ -13,21 +13,21 @@ datasource db {
 model Transaction {
   id          Int      @id @default(autoincrement())
   date        DateTime
-  amount      Decimal
+  amount      Float    // Changed to Float for SQLite compatibility/simplicity as per T3 stack
   category    String
   sub         String
   notes       String?
   isPaid      Boolean  @default(false)
-  week        String
+  week        String   // YYYY-WW format
   createdAt   DateTime @default(now())
 }
 
 model Recurring {
   id      Int     @id @default(autoincrement())
-  type    String
+  type    String  // 'income' | 'expense'
   name    String
-  amount  Decimal
-  owner   String
+  amount  Float
+  owner   String  // 'Daniel' | 'Gedalya' | 'Ambos'
 }
 
 model Category {
@@ -35,5 +35,5 @@ model Category {
   name    String   @unique
   iconKey String
   color   String
-  subs    String
+  subs    String   // JSON string of subcategories
 }
