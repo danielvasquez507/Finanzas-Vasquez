@@ -257,6 +257,7 @@ export default function App() {
 
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
     const [calendarModal, setCalendarModal] = useState(false);
+    const [calendarTarget, setCalendarTarget] = useState<'new' | 'edit'>('new');
     const [optionPicker, setOptionPicker] = useState<{ title: string, options: string[], onSelect: (val: string) => void } | null>(null);
 
     useEffect(() => {
@@ -823,12 +824,18 @@ export default function App() {
                     {/* INPUT */}
                     {activeTab === 'input' && (
                         <div className="p-5 space-y-5 animate-in slide-in-from-right-10 h-full flex flex-col">
-                            <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-sm border border-slate-100 dark:border-slate-800 text-center"><span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block text-center mb-2">Monto (TC)</span><div className="flex justify-center items-center mb-2 text-slate-800 dark:text-white"><span className="text-4xl text-slate-300 font-light mr-1">$</span><input type="number" aria-label="Ingresar monto" title="Monto de la transacción" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} className="text-6xl font-bold bg-transparent w-full text-center outline-none placeholder:text-slate-100 dark:placeholder:text-slate-800" autoFocus /></div></div>
+                            <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block text-center mb-2">Monto (TC)</span>
+                                <div className="flex justify-center items-center mb-2 text-slate-800 dark:text-white">
+                                    <span className="text-4xl text-slate-300 font-light mr-1">$</span>
+                                    <input type="number" step="0.01" aria-label="Ingresar monto" title="Monto de la transacción" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} className="text-6xl font-bold bg-transparent w-full text-center outline-none placeholder:text-slate-100 dark:placeholder:text-slate-800" autoFocus />
+                                </div>
+                            </div>
                             <div className="flex-1 space-y-3">
                                 <div className="overflow-x-auto pb-2 no-scrollbar"><div className="flex gap-3">{categories.map(cat => (<button key={cat.id} onClick={() => { setSelectedCat(cat); setSubCat(''); }} aria-label={`Seleccionar categoría ${cat.name}`} title={`Categoría ${cat.name}`} className={`flex-shrink-0 flex flex-col items-center gap-1 min-w-[70px] p-2 rounded-xl border-2 transition-all ${selectedCat?.id === cat.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 opacity-100' : 'border-transparent bg-white dark:bg-slate-900 opacity-60 hover:opacity-100'}`}><div className={`p-2 rounded-full ${selectedCat?.id === cat.id ? 'text-blue-600' : 'text-slate-500'}`}>{ICON_LIB[cat.iconKey]}</div><span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 text-center leading-tight truncate w-full">{cat.name}</span></button>))}</div></div>
                                 {selectedCat && (<div className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 animate-in fade-in"><label className="text-[10px] font-bold text-slate-400 uppercase mb-2 block ml-1">Subcategoría</label><div className="flex flex-wrap gap-2">{selectedCat.subs.map(sub => (<button key={sub} onClick={() => setSubCat(sub)} aria-label={`Subcategoría ${sub}`} title={`Subcategoría: ${sub}`} className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${subCat === sub ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-100 dark:border-slate-700'}`}>{sub}</button>))}</div></div>)}
                                 <div className="flex gap-2 pt-2">
-                                    <button onClick={() => setCalendarModal(true)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none w-1/3 text-center active:scale-95 transition-transform" aria-label="Cambiar fecha">
+                                    <button onClick={() => { setCalendarTarget('new'); setCalendarModal(true); }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none w-1/3 text-center active:scale-95 transition-transform" aria-label="Cambiar fecha">
                                         {new Date(safeDate(date)).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
                                     </button>
                                     <input type="text" aria-label="Descripción o nota" title="Descripción" placeholder="Nota..." value={notes} onChange={e => setNotes(e.target.value)} className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-bold outline-none dark:text-white" />
@@ -988,7 +995,21 @@ export default function App() {
                     <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
                         <div className="bg-white dark:bg-slate-900 w-full rounded-3xl p-6 shadow-2xl space-y-4">
                             <h3 className="font-bold text-lg dark:text-white">Editar Movimiento</h3>
-                            <div><label className="text-xs text-slate-400 uppercase font-bold" htmlFor="edit-amount">Monto</label><input id="edit-amount" type="number" aria-label="Monto" title="Editar monto" value={editingTx.amount} onChange={(e) => setEditingTx({ ...editingTx, amount: parseFloat(e.target.value) })} className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl font-bold dark:text-white mt-1" /></div>
+                            <div className="flex gap-2">
+                                <div className="w-1/2">
+                                    <label className="text-xs text-slate-400 uppercase font-bold" htmlFor="edit-amount">Monto</label>
+                                    <input id="edit-amount" type="number" step="0.01" aria-label="Monto" title="Editar monto" value={editingTx.amount} onChange={(e) => setEditingTx({ ...editingTx, amount: parseFloat(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl font-bold dark:text-white mt-1" />
+                                </div>
+                                <div className="w-1/2">
+                                    <label className="text-xs text-slate-400 uppercase font-bold">Fecha</label>
+                                    <button
+                                        onClick={() => { setCalendarTarget('edit'); setCalendarModal(true); }}
+                                        className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl font-bold dark:text-white mt-1 text-sm text-center border border-transparent active:scale-95 transition-transform"
+                                    >
+                                        {new Date(safeDate(editingTx.date)).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+                                    </button>
+                                </div>
+                            </div>
                             <div><label className="text-xs text-slate-400 uppercase font-bold">Categoría y Subcategoría</label>
                                 <div className="flex gap-2 mt-1">
                                     <button
@@ -1181,8 +1202,15 @@ export default function App() {
 
                 {/* --- CALENDAR MODAL --- */}
                 {calendarModal && (
-                    <div className="absolute inset-0 z-[90] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-                        <DatePicker value={date} onChange={setDate} onClose={() => setCalendarModal(false)} />
+                    <div className="absolute inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
+                        <DatePicker
+                            value={calendarTarget === 'new' ? date : (editingTx?.date || date)}
+                            onChange={(newVal) => {
+                                if (calendarTarget === 'new') setDate(newVal);
+                                else if (editingTx) setEditingTx({ ...editingTx, date: newVal });
+                            }}
+                            onClose={() => setCalendarModal(false)}
+                        />
                     </div>
                 )}
                 {/* --- OPTION PICKER MODAL --- */}
