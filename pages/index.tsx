@@ -836,11 +836,11 @@ export default function App() {
                         </div>
                         {/* Desktop Nav */}
                         <div className="hidden md:flex items-center gap-1">
-                            <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'dashboard' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Inicio</button>
-                            <button onClick={() => setActiveTab('recurring')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'recurring' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Fijos</button>
-                            <button onClick={() => setActiveTab('input')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'input' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Ingresar</button>
-                            <button onClick={() => setActiveTab('list')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'list' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Movimientos</button>
-                            <button onClick={() => { setActiveTab('settings'); setSettingsTab('menu'); }} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'settings' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Ajustes</button>
+                            <button onClick={() => setActiveTab('dashboard')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${activeTab === 'dashboard' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Inicio</button>
+                            <button onClick={() => setActiveTab('recurring')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${activeTab === 'recurring' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Fijos</button>
+                            <button onClick={() => setActiveTab('input')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${activeTab === 'input' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Ingresar</button>
+                            <button onClick={() => setActiveTab('list')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${activeTab === 'list' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Movimientos</button>
+                            <button onClick={() => { setActiveTab('settings'); setSettingsTab('menu'); }} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${activeTab === 'settings' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Ajustes</button>
                         </div>
                     </div>
                     <div className="flex gap-2">
@@ -862,7 +862,7 @@ export default function App() {
                     {activeTab === 'dashboard' && (
                         <div className="pt-4 px-4 pb-6 space-y-6 animate-in fade-in">
                             <div className="flex flex-col gap-3">
-                                <div className="bg-slate-200 dark:bg-slate-800 p-1 rounded-xl flex font-bold text-xs relative">{['week', 'month', 'year'].map(filter => (<button key={filter} onClick={() => { setDashFilter(filter); setViewDate(new Date()); }} aria-label={`Filtrar por ${filter === 'week' ? 'Semana' : filter === 'month' ? 'Mes' : 'Año'}`} title={`Ver por ${filter === 'week' ? 'semana' : filter === 'month' ? 'mes' : 'año'}`} className={`flex-1 py-2 rounded-lg transition-all capitalize ${dashFilter === filter ? 'bg-white dark:bg-slate-700 text-black dark:text-white shadow-sm' : 'text-slate-500'}`}>{filter === 'week' ? 'Semana' : filter === 'month' ? 'Mes' : 'Año'}</button>))}</div>
+                                <div className="bg-slate-200 dark:bg-slate-800 rounded-full flex font-bold text-xs relative overflow-hidden">{['week', 'month', 'year'].map(filter => (<button key={filter} onClick={() => { setDashFilter(filter); setViewDate(new Date()); }} aria-label={`Filtrar por ${filter === 'week' ? 'Semana' : filter === 'month' ? 'Mes' : 'Año'}`} title={`Ver por ${filter === 'week' ? 'semana' : filter === 'month' ? 'mes' : 'año'}`} className={`flex-1 py-2.5 transition-all capitalize ${dashFilter === filter ? 'bg-white dark:bg-slate-700 text-black dark:text-white shadow-sm' : 'text-slate-500'}`}>{filter === 'week' ? 'Semana' : filter === 'month' ? 'Mes' : 'Año'}</button>))}</div>
                                 <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-100 dark:border-slate-800"><button onClick={() => navigateTime(-1)} aria-label="Anterior" title="Anterior" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500"><ChevronLeft size={20} /></button><span className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">{getTimeLabel()}</span><button onClick={() => navigateTime(1)} aria-label="Siguiente" title="Siguiente" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500"><ChevronRight size={20} /></button></div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -881,7 +881,7 @@ export default function App() {
                     {/* FIJOS (RECURRENTES) */}
                     {activeTab === 'recurring' && (
                         <div className="pt-4 px-4 pb-24 animate-in fade-in space-y-6 max-w-none mx-auto">
-                            <div className="flex gap-2 pb-2 overflow-x-auto no-scrollbar justify-center md:justify-start">{['all', 'Daniel', 'Gedalya'].map(t => <button key={t} onClick={() => setRecurringTab(t)} aria-label={`Filtrar por ${t}`} title={`Filtrar por ${t}`} className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap border ${recurringTab === t ? 'bg-slate-800 text-white' : 'bg-white dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-800'}`}>{t === 'all' ? 'Todos' : t}</button>)}</div>
+                            <div className="flex gap-2 pb-2 overflow-x-auto no-scrollbar justify-center md:justify-start">{['all', 'Daniel', 'Gedalya'].map(t => <button key={t} onClick={() => setRecurringTab(t)} aria-label={`Filtrar por ${t}`} title={`Filtrar por ${t}`} className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap border ${recurringTab === t ? 'bg-slate-800 text-white' : 'bg-white dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-800'}`}>{t === 'all' ? 'Todos' : t}</button>)}</div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-2xl border border-green-100 dark:border-green-800"><div className="flex items-center gap-2 text-green-700 dark:text-green-400 mb-1"><ArrowUpCircle size={16} /> <span className="text-xs font-bold uppercase">Ingresos</span></div><div className="text-2xl font-black text-slate-800 dark:text-white">${recStats.totalIncome.toFixed(2)}</div></div>
@@ -892,7 +892,7 @@ export default function App() {
                             </div>
 
                             <div className="space-y-4">
-                                <div className="flex justify-between items-center"><h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Detalle</h3><button onClick={openNewRecModal} aria-label="Agregar nuevo registro fijo" title="Agregar concepto fijo" className="text-xs bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg font-bold hover:bg-blue-200 transition-colors">+ Agregar</button></div>
+                                <div className="flex justify-between items-center"><h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Detalle</h3><button onClick={openNewRecModal} aria-label="Agregar nuevo registro fijo" title="Agregar concepto fijo" className="text-xs bg-blue-100 text-blue-600 px-4 py-1.5 rounded-full font-bold hover:bg-blue-200 transition-colors">+ Agregar</button></div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                     {recList.map(r => (
                                         <div key={r.id} onClick={() => openEditRecModal(r)} className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center cursor-pointer hover:shadow-md transition-all hover:border-blue-200 dark:hover:border-blue-800">
@@ -932,16 +932,16 @@ export default function App() {
                                 </div>
                             </div>
                             <div className="flex-1 space-y-3">
-                                <div className="overflow-x-auto pb-2 no-scrollbar"><div className="flex gap-3">{categories.map(cat => (<button key={cat.id} onClick={() => { setSelectedCat(cat); setSubCat(''); }} aria-label={`Seleccionar categoría ${cat.name}`} title={`Categoría ${cat.name}`} className={`flex-shrink-0 flex flex-col items-center gap-1 min-w-[70px] p-2 rounded-xl border-2 transition-all ${selectedCat?.id === cat.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 opacity-100' : 'border-transparent bg-white dark:bg-slate-900 opacity-60 hover:opacity-100'}`}><div className={`p-2 rounded-full ${selectedCat?.id === cat.id ? 'text-blue-600' : 'text-slate-500'}`}>{ICON_LIB[cat.iconKey]}</div><span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 text-center leading-tight truncate w-full">{cat.name}</span></button>))}</div></div>
-                                {selectedCat && (<div className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 animate-in fade-in"><label className="text-[10px] font-bold text-slate-400 uppercase mb-2 block ml-1">Subcategoría</label><div className="flex flex-wrap gap-2">{selectedCat.subs.map(sub => (<button key={sub} onClick={() => setSubCat(sub)} aria-label={`Subcategoría ${sub}`} title={`Subcategoría: ${sub}`} className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${subCat === sub ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-100 dark:border-slate-700'}`}>{sub}</button>))}</div></div>)}
+                                <div className="overflow-x-auto pb-2 no-scrollbar"><div className="flex gap-3">{categories.map(cat => (<button key={cat.id} onClick={() => { setSelectedCat(cat); setSubCat(''); }} aria-label={`Seleccionar categoría ${cat.name}`} title={`Categoría ${cat.name}`} className={`flex-shrink-0 flex flex-col items-center gap-1 min-w-[70px] p-2 rounded-2xl border-2 transition-all ${selectedCat?.id === cat.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 opacity-100' : 'border-transparent bg-white dark:bg-slate-900 opacity-60 hover:opacity-100'}`}><div className={`p-2 rounded-full ${selectedCat?.id === cat.id ? 'text-blue-600' : 'text-slate-500'}`}>{ICON_LIB[cat.iconKey]}</div><span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 text-center leading-tight truncate w-full">{cat.name}</span></button>))}</div></div>
+                                {selectedCat && (<div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 animate-in fade-in"><label className="text-[10px] font-bold text-slate-400 uppercase mb-2 block ml-1">Subcategoría</label><div className="flex flex-wrap gap-2">{selectedCat.subs.map(sub => (<button key={sub} onClick={() => setSubCat(sub)} aria-label={`Subcategoría ${sub}`} title={`Subcategoría: ${sub}`} className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${subCat === sub ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-100 dark:border-slate-700'}`}>{sub}</button>))}</div></div>)}
                                 <div className="flex gap-2 pt-2">
-                                    <button onClick={() => { setCalendarTarget('new'); setCalendarModal(true); }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none w-1/3 text-center active:scale-95 transition-transform" aria-label="Cambiar fecha">
+                                    <button onClick={() => { setCalendarTarget('new'); setCalendarModal(true); }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none w-1/3 text-center active:scale-95 transition-transform" aria-label="Cambiar fecha">
                                         {new Date(safeDate(date)).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
                                     </button>
-                                    <input type="text" aria-label="Descripción o nota" title="Descripción" placeholder="Nota..." value={notes} onChange={e => setNotes(e.target.value)} className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-bold outline-none dark:text-white" />
+                                    <input type="text" aria-label="Descripción o nota" title="Descripción" placeholder="Nota..." value={notes} onChange={e => setNotes(e.target.value)} className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-3 text-xs font-bold outline-none dark:text-white" />
                                 </div>
                             </div>
-                            <button onClick={handleSave} disabled={!amount || !selectedCat || !subCat} aria-label="Guardar movimiento" title="Guardar transacción" className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-500/20 disabled:opacity-50">GUARDAR</button>
+                            <button onClick={handleSave} disabled={!amount || !selectedCat || !subCat} aria-label="Guardar movimiento" title="Guardar transacción" className="w-full py-4 bg-blue-600 text-white rounded-full font-bold shadow-xl shadow-blue-500/20 disabled:opacity-50">GUARDAR</button>
                         </div>
                     )}
 
@@ -1148,13 +1148,13 @@ export default function App() {
                                                     <div className={`p-2 rounded-2xl ${cat.color.split(' ')[0]} ${cat.color.split(' ')[1]}`}>{ICON_LIB[cat.iconKey]}</div>
                                                     <div className="flex-1 font-bold text-sm dark:text-white">{cat.name}</div>
                                                     <div className="flex gap-1">
-                                                        <button onClick={() => setEditingCategory(cat)} title="Editar" className="p-2 bg-slate-50 dark:bg-slate-800 rounded text-blue-500 hover:bg-blue-50"><Edit3 size={14} /></button>
-                                                        <button onClick={() => handleDeleteCategory(cat.id)} title="Eliminar" className="p-2 bg-slate-50 dark:bg-slate-800 rounded text-red-500 hover:bg-red-50"><Trash2 size={14} /></button>
+                                                        <button onClick={() => setEditingCategory(cat)} title="Editar" className="p-2 bg-slate-50 dark:bg-slate-800 rounded-full text-blue-500 hover:bg-blue-50"><Edit3 size={14} /></button>
+                                                        <button onClick={() => handleDeleteCategory(cat.id)} title="Eliminar" className="p-2 bg-slate-50 dark:bg-slate-800 rounded-full text-red-500 hover:bg-red-50"><Trash2 size={14} /></button>
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-wrap gap-2 ml-2">
                                                     {cat.subs.map(sub => (
-                                                        <div key={sub} className="group relative text-xs bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center gap-2 hover:bg-red-50 dark:hover:bg-red-900/10 hover:border-red-200 transition-colors cursor-default">
+                                                        <div key={sub} className="group relative text-xs bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 flex items-center gap-2 hover:bg-red-50 dark:hover:bg-red-900/10 hover:border-red-200 transition-colors cursor-default">
                                                             {sub}
                                                             <button
                                                                 onClick={() => handleDeleteSubcategory(cat.id, sub)}
@@ -1167,7 +1167,7 @@ export default function App() {
                                                     ))}
                                                     <button onClick={() => {
                                                         setInputModal({ open: true, title: `Nueva subcategoría en ${cat.name}`, placeholder: "Nombre...", value: "", catId: cat.id });
-                                                    }} className="text-[10px] border border-dashed border-slate-300 text-slate-400 px-3 py-1.5 rounded-lg hover:bg-slate-50 hover:text-blue-500 hover:border-blue-300 transition-colors">+ Agregar</button>
+                                                    }} className="text-[10px] border border-dashed border-slate-300 text-slate-400 px-3 py-1.5 rounded-full hover:bg-slate-50 hover:text-blue-500 hover:border-blue-300 transition-colors">+ Agregar</button>
                                                 </div>
                                             </div>
                                         ))}
@@ -1197,8 +1197,8 @@ export default function App() {
                             <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1 block" htmlFor="rec-name">Concepto</label><input id="rec-name" type="text" aria-label="Concepto" title="Nombre del concepto" value={recName} onChange={e => setRecName(e.target.value)} placeholder="Ej: Salario" className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl dark:text-white" /></div>
                             <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1 block" htmlFor="rec-amount">Monto</label><input id="rec-amount" type="number" aria-label="Monto" title="Cantidad económica" value={recAmount} onChange={e => setRecAmount(e.target.value)} placeholder="0.00" className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl dark:text-white" /></div>
                             <div className="flex gap-2">{OWNERS.map(o => <button key={o} onClick={() => setRecOwner(o)} aria-label={`Asignar registro a ${o}`} title={`Responsable: ${o}`} className={`flex-1 py-2 rounded-lg text-xs border ${recOwner === o ? 'bg-blue-50 border-blue-500 text-blue-600' : 'text-slate-400'}`}>{o}</button>)}</div>
-                            <button onClick={handleSaveRecurring} aria-label="Guardar registro fijo" title="Confirmar y guardar" className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold">Guardar</button>
-                            <button onClick={() => setShowRecModal(false)} aria-label="Cancelar cambios" title="Cerrar modal" className="w-full py-2 text-slate-400 text-xs">Cancelar</button>
+                            <button onClick={handleSaveRecurring} aria-label="Guardar registro fijo" title="Confirmar y guardar" className="w-full py-3 bg-blue-600 text-white rounded-full font-bold">Guardar</button>
+                            <button onClick={() => setShowRecModal(false)} aria-label="Cancelar cambios" title="Cerrar modal" className="w-full py-2 text-slate-400 text-xs text-center border-t border-transparent hover:text-slate-600 transition-colors">Cancelar</button>
                         </div>
                     </div>
                 )}
@@ -1206,7 +1206,7 @@ export default function App() {
                     <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center animate-in fade-in">
                         <div className="bg-white dark:bg-slate-900 w-full sm:w-[90%] rounded-t-3xl sm:rounded-3xl p-6 h-[85vh] sm:h-auto flex flex-col animate-in slide-in-from-bottom-10">
                             <div className="flex justify-between items-center mb-4"><h2 className="font-bold text-lg dark:text-white flex items-center gap-2"><UploadCloud className="text-blue-500" /> Importador IA</h2><button onClick={() => setShowBulkModal(false)} aria-label="Cerrar importador" title="Cerrar ventana"><X className="dark:text-white" /></button></div>
-                            <div className="flex-1 overflow-y-auto space-y-4"><div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800"><div className="flex justify-between items-start mb-2"><label className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">1. Prompt</label><button onClick={copyPrompt} aria-label="Copiar prompt IA" title="Copiar al portapapeles" className={`text-xs px-2 py-1 rounded font-bold ${isCopied ? 'bg-green-500 text-white' : 'bg-indigo-200 dark:bg-indigo-800 text-indigo-700'}`}>{isCopied ? '¡Copiado!' : 'Copiar'}</button></div><p className="font-mono text-[10px] text-slate-600 dark:text-slate-300 p-2 bg-white dark:bg-slate-950 rounded border border-indigo-100 dark:border-indigo-900/50">{AI_PROMPT}</p></div><div><label htmlFor="csv-input" className="text-xs font-bold text-slate-400 uppercase mb-2 block">2. Pegar CSV</label><textarea id="csv-input" value={csvText} onChange={(e) => setCsvText(e.target.value)} title="Entrada de datos CSV" className="w-full h-32 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs font-mono dark:text-white" placeholder="Pegar aquí..."></textarea></div><button onClick={handleBulkImport} aria-label="Procesar datos pegados" title="Ejecutar importación" className="w-full py-4 bg-blue-600 text-white font-bold rounded-xl">Procesar</button></div>
+                            <div className="flex-1 overflow-y-auto space-y-4"><div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-3xl border border-indigo-100 dark:border-indigo-800"><div className="flex justify-between items-start mb-2"><label className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">1. Prompt</label><button onClick={copyPrompt} aria-label="Copiar prompt IA" title="Copiar al portapapeles" className={`text-xs px-3 py-1.5 rounded-full font-bold ${isCopied ? 'bg-green-500 text-white' : 'bg-indigo-200 dark:bg-indigo-800 text-indigo-700'}`}>{isCopied ? '¡Copiado!' : 'Copiar'}</button></div><p className="font-mono text-[10px] text-slate-600 dark:text-slate-300 p-2 bg-white dark:bg-slate-950 rounded border border-indigo-100 dark:border-indigo-900/50">{AI_PROMPT}</p></div><div><label htmlFor="csv-input" className="text-xs font-bold text-slate-400 uppercase mb-2 block">2. Pegar CSV</label><textarea id="csv-input" value={csvText} onChange={(e) => setCsvText(e.target.value)} title="Entrada de datos CSV" className="w-full h-32 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 text-xs font-mono dark:text-white" placeholder="Pegar aquí..."></textarea></div><button onClick={handleBulkImport} aria-label="Procesar datos pegados" title="Ejecutar importación" className="w-full py-4 bg-blue-600 text-white font-bold rounded-full">Procesar</button></div>
                         </div>
                     </div>
                 )}
@@ -1277,7 +1277,7 @@ export default function App() {
                                 </div>
                             </div>
                             <div><label className="text-xs text-slate-400 uppercase font-bold" htmlFor="edit-note">Nota</label><input id="edit-note" type="text" aria-label="Nota" title="Nota adicional" value={editingTx.notes} onChange={(e) => setEditingTx({ ...editingTx, notes: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl dark:text-white mt-1" /></div>
-                            <div className="flex gap-3 pt-2"><button onClick={() => handleDelete(editingTx.id)} aria-label="Eliminar este movimiento" title="Borrar permanentemente" className="flex-1 py-3 bg-red-100 text-red-600 rounded-xl font-bold flex justify-center items-center gap-2"><Trash2 size={18} /> Borrar</button><button onClick={handleUpdate} aria-label="Actualizar movimiento" title="Guardar cambios realizados" className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">Guardar</button></div>
+                            <div className="flex gap-3 pt-2"><button onClick={() => handleDelete(editingTx.id)} aria-label="Eliminar este movimiento" title="Borrar permanentemente" className="flex-1 py-3 bg-red-100 text-red-600 rounded-full font-bold flex justify-center items-center gap-2"><Trash2 size={18} /> Borrar</button><button onClick={handleUpdate} aria-label="Actualizar movimiento" title="Guardar cambios realizados" className="flex-1 py-3 bg-blue-600 text-white rounded-full font-bold">Guardar</button></div>
                             <button onClick={() => setEditingTx(null)} aria-label="Cancelar edición" title="Volver sin guardar" className="w-full py-2 text-slate-400 text-xs">Cancelar</button>
                         </div>
                     </div>
@@ -1344,8 +1344,8 @@ export default function App() {
                             </div>
 
                             <div className="flex gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                <button onClick={() => setEditingCategory(null)} className="flex-1 py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold rounded-xl hover:bg-slate-200 transition-colors">Cancelar</button>
-                                <button onClick={() => saveCategoryEdit(editingCategory)} className="flex-1 py-3.5 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95">Guardar</button>
+                                <button onClick={() => setEditingCategory(null)} className="flex-1 py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold rounded-full hover:bg-slate-200 transition-colors">Cancelar</button>
+                                <button onClick={() => saveCategoryEdit(editingCategory)} className="flex-1 py-3.5 bg-blue-600 text-white font-bold rounded-full shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95">Guardar</button>
                             </div>
                         </div>
                     </div>
@@ -1406,8 +1406,8 @@ export default function App() {
                             <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">Confirmación</h3>
                             <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 font-medium">{confirmModal.msg}</p>
                             <div className="flex gap-3">
-                                <button onClick={() => setConfirmModal(null)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-xl transition-colors hover:bg-slate-200">Cancelar</button>
-                                <button onClick={confirmModal.onConfirm} className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors">Confirmar</button>
+                                <button onClick={() => setConfirmModal(null)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-full transition-colors hover:bg-slate-200">Cancelar</button>
+                                <button onClick={confirmModal.onConfirm} className="flex-1 py-3 bg-red-500 text-white font-bold rounded-full shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors">Confirmar</button>
                             </div>
                         </div>
                     </div>
@@ -1428,8 +1428,8 @@ export default function App() {
                                 className="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl dark:text-white font-bold mb-6 outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <div className="flex gap-3">
-                                <button onClick={() => setInputModal(null)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-xl transition-colors hover:bg-slate-200">Cancelar</button>
-                                <button onClick={submitSubcategory} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-colors">Guardar</button>
+                                <button onClick={() => setInputModal(null)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-full transition-colors hover:bg-slate-200">Cancelar</button>
+                                <button onClick={submitSubcategory} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-colors">Guardar</button>
                             </div>
                         </div>
                     </div>
