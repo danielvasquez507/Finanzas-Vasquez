@@ -1,6 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../lib/prisma';
 
+const parseLocalDate = (dateStr: string | Date) => {
+    if (typeof dateStr === 'string' && dateStr.includes('-')) {
+        const [y, m, d] = dateStr.split('T')[0].split('-').map(Number);
+        return new Date(y, m - 1, d);
+    }
+    return new Date(dateStr);
+};
+
+const getWeekRangeStr = (date: Date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day; // Sunday is 0
+    const start = new Date(new Date(date).setDate(diff));
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(new Date(start).setDate(start.getDate() + 6));
+    end.setHours(23, 59, 59, 999);
+    const opts: any = { month: 'short', day: 'numeric' };
+    return `${start.toLocaleDateString('es-ES', opts)} - ${end.toLocaleDateString('es-ES', opts)}`;
+};
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -23,14 +43,15 @@ export default async function handler(
     } else if (req.method === 'POST') {
         try {
             const { date, category, sub, amount, notes, week, isPaid } = req.body;
+            const dateObj = parseLocalDate(date);
             const newTx = await prisma.transaction.create({
                 data: {
-                    date: new Date(date),
+                    date: dateObj,
                     category,
                     sub,
                     amount: parseFloat(amount),
                     notes,
-                    week: week || getWeekString(new Date(date)),
+                    week: week || getWeekRangeStr(dateObj),
                     isPaid: isPaid || false
                 },
             });
@@ -53,16 +74,8 @@ export default async function handler(
         const { id } = req.query;
         try {
             const { date, category, sub, amount, notes, isPaid } = req.body;
-            const dateObj = new Date(date);
-            const day = dateObj.getDay();
-            const diff = dateObj.getDate() - day;
-            const start = new Date(new Date(dateObj).setDate(diff));
-            start.setHours(0, 0, 0, 0);
-            const end = new Date(new Date(start).setDate(start.getDate() + 6));
-            end.setHours(23, 59, 59, 999);
-
-            const opts: any = { month: 'short', day: 'numeric' };
-            const weekStr = `${start.toLocaleDateString('es-ES', opts)} - ${end.toLocaleDateString('es-ES', opts)}`;
+            const dateObj = parseLocalDate(date);
+            const weekStr = getWeekRangeStr(dateObj);
 
             const updatedTx = await prisma.transaction.update({
                 where: { id: Number(id) },
@@ -86,10 +99,4 @@ export default async function handler(
     }
 }
 
-// Helper to calc week if not provided
-const getWeekString = (date: Date) => {
-    const firstDay = new Date(date.getFullYear(), 0, 1);
-    const pastDays = (date.getTime() - firstDay.getTime()) / 86400000;
-    const weekNum = Math.ceil((pastDays + firstDay.getDay() + 1) / 7);
-    return `W${weekNum}`;
-};
+
