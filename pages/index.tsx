@@ -218,6 +218,15 @@ export default function App() {
     const [toast, setToast] = useState<{ msg: string, type: 'success' | 'error' | 'info' } | null>(null);
     const [confirmModal, setConfirmModal] = useState<{ open: boolean, msg: string, onConfirm: () => void } | null>(null);
     const [inputModal, setInputModal] = useState<{ open: boolean, title: string, placeholder: string, value: string, catId: string } | null>(null);
+    const [showListHelp, setShowListHelp] = useState(false);
+
+    useEffect(() => {
+        if (activeTab === 'list') {
+            setShowListHelp(true);
+            const timer = setTimeout(() => setShowListHelp(false), 30000);
+            return () => clearTimeout(timer);
+        }
+    }, [activeTab]);
 
 
     const showToast = (msg: string, type: 'success' | 'error' | 'info' = 'success') => {
@@ -827,10 +836,12 @@ export default function App() {
                     {/* LIST & CONCILE UNIFIED */}
                     {activeTab === 'list' && (
                         <div className="animate-in fade-in space-y-4 p-4">
-                            <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-xl text-[10px] text-indigo-800 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 flex gap-2 items-center">
-                                <AlertCircle size={14} />
-                                <span>Toca el círculo para marcar como pagado. Toca el gasto para editar.</span>
-                            </div>
+                            {showListHelp && (
+                                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-xl text-[10px] text-indigo-800 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 flex gap-2 items-center animate-in slide-in-from-top-2">
+                                    <AlertCircle size={14} />
+                                    <span>Toca el círculo para marcar como pagado. Toca el gasto para editar.</span>
+                                </div>
+                            )}
 
                             {transactions.length === 0 && (
                                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-dashed border-slate-200 dark:border-slate-800">
