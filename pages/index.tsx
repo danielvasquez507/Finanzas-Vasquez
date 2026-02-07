@@ -840,7 +840,7 @@ export default function App() {
                             <button onClick={() => setActiveTab('recurring')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'recurring' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Fijos</button>
                             <button onClick={() => setActiveTab('input')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'input' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Ingresar</button>
                             <button onClick={() => setActiveTab('list')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'list' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Movimientos</button>
-                            <button onClick={() => setActiveTab('settings')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'settings' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Ajustes</button>
+                            <button onClick={() => { setActiveTab('settings'); setSettingsTab('menu'); }} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${activeTab === 'settings' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>Ajustes</button>
                         </div>
                     </div>
                     <div className="flex gap-2">
@@ -1065,11 +1065,7 @@ export default function App() {
                     {/* SETTINGS */}
                     {activeTab === 'settings' && (
                         <div className="p-4 animate-in slide-in-from-right-10 space-y-4">
-                            {settingsTab !== 'menu' && (
-                                <button onClick={() => setSettingsTab('menu')} className="flex items-center gap-2 text-xs font-bold text-blue-600 mb-2">
-                                    <ChevronLeft size={16} /> Volver a Ajustes
-                                </button>
-                            )}
+
 
                             {settingsTab === 'menu' && (
                                 <div className="grid grid-cols-1 gap-3">
@@ -1180,7 +1176,7 @@ export default function App() {
                     <button onClick={() => setActiveTab('recurring')} aria-label="Ir a Gastos Fijos" title="Gastos e ingresos fijos" className={`flex flex-col items-center p-2 ${activeTab === 'recurring' ? 'text-blue-600' : 'text-slate-400'}`}><Repeat size={24} /><span className="text-[10px] font-bold mt-1">Fijos</span></button>
                     <button onClick={() => setActiveTab('input')} aria-label="Agregar nuevo gasto" title="Ingresar gasto" className={`flex flex-col items-center p-2 ${activeTab === 'input' ? 'text-blue-600' : 'text-slate-400'}`}><Plus size={32} className="bg-blue-600 text-white rounded-full p-1.5 shadow-lg" /></button>
                     <button onClick={() => setActiveTab('list')} aria-label="Ir a Movimientos" title="Histórico de movimientos" className={`flex flex-col items-center p-2 ${activeTab === 'list' ? 'text-blue-600' : 'text-slate-400'}`}><ListTodo size={24} /><span className="text-[10px] font-bold mt-1">Movs.</span></button>
-                    <button onClick={() => setActiveTab('settings')} aria-label="Ajustes" title="Configuración" className={`flex flex-col items-center p-2 ${activeTab === 'settings' ? 'text-blue-600' : 'text-slate-400'}`}><Settings size={24} /><span className="text-[10px] font-bold mt-1">Ajustes</span></button>
+                    <button onClick={() => { setActiveTab('settings'); setSettingsTab('menu'); }} aria-label="Ajustes" title="Configuración" className={`flex flex-col items-center p-2 ${activeTab === 'settings' ? 'text-blue-600' : 'text-slate-400'}`}><Settings size={24} /><span className="text-[10px] font-bold mt-1">Ajustes</span></button>
                 </nav>
 
                 {/* MODALS RENDER */}
