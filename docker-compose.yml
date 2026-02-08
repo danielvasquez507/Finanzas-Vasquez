@@ -3,19 +3,15 @@ version: '3.9'
 services:
   app:
     container_name: finanzas_vasquez
-    # Usamos la imagen pre-construida desde GitHub Container Registry
-    # Esto evita construir en el servidor y ahorra espacio/CPU
+    # Using GitHub Container Registry image
     image: ghcr.io/danielvasquez507/finanzas-vasquez:latest
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      # URL absoluta para SQLite dentro del contenedor
       - DATABASE_URL=file:/app/db_data/prod.db
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - NEXTAUTH_SECRET=cambiar_esto_por_secreto_seguro_produccion
     volumes:
-      # Persistencia de datos mapeada al host
-      # Usa DB_VOLUME_PATH si está definido, si no, usa ./db-data localmente
       - ${DB_VOLUME_PATH:-./db-data}:/app/db_data
