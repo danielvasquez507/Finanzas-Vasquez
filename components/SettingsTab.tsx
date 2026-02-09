@@ -1,11 +1,11 @@
 import React from 'react';
-import { ChevronRight, ChevronLeft, Moon, Sun, UploadCloud, Grid, AlertCircle, Plus, Edit3, Trash2, X, Heart, User } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Moon, Sun, UploadCloud, Grid, AlertCircle, Plus, Edit3, Trash2, X, Heart, User, FileJson, Activity, Cpu, Database, RefreshCw, Repeat } from 'lucide-react';
 import { Category } from '@/types';
 import { ICON_LIB, COLORS_LIB } from '@/lib/icons';
 
 interface SettingsTabProps {
-    settingsTab: 'menu' | 'themes' | 'import' | 'categories' | 'info';
-    setSettingsTab: (tab: 'menu' | 'themes' | 'import' | 'categories' | 'info') => void;
+    settingsTab: 'menu' | 'themes' | 'import' | 'categories' | 'info' | 'validation';
+    setSettingsTab: (tab: 'menu' | 'themes' | 'import' | 'categories' | 'info' | 'validation') => void;
     darkMode: boolean;
     setDarkMode: (val: boolean) => void;
     setShowBulkModal: (val: boolean) => void;
@@ -17,6 +17,9 @@ interface SettingsTabProps {
     currentUser: string;
     setCurrentUser: (user: string) => void;
     onResetDevice: () => void;
+    healthStatus: any;
+    checkHealth: () => void;
+    isCheckingHealth: boolean;
 }
 
 const SettingsTab = ({
@@ -32,7 +35,10 @@ const SettingsTab = ({
     setInputModal,
     currentUser,
     setCurrentUser,
-    onResetDevice
+    onResetDevice,
+    healthStatus,
+    checkHealth,
+    isCheckingHealth
 }: SettingsTabProps) => {
     return (
         <div className="pt-4 px-4 pb-4 animate-in slide-in-from-right-10">
@@ -91,6 +97,28 @@ const SettingsTab = ({
                             </div>
                         </div>
                         <ChevronRight size={20} className="text-slate-300" />
+                    </button>
+
+                    <button onClick={() => setSettingsTab('import')} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-100 dark:border-slate-700 group">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-xl group-hover:scale-110 transition-transform"><FileJson size={20} /></div>
+                            <div className="text-left">
+                                <p className="font-bold text-slate-700 dark:text-white text-sm">IA & Importación</p>
+                                <p className="text-[10px] text-slate-400 font-medium">Procesar mensajes de WhatsApp</p>
+                            </div>
+                        </div>
+                        <ChevronRight size={18} className="text-slate-300" />
+                    </button>
+
+                    <button onClick={() => setSettingsTab('validation')} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-100 dark:border-slate-700 group">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-xl group-hover:scale-110 transition-transform"><Activity size={20} /></div>
+                            <div className="text-left">
+                                <p className="font-bold text-slate-700 dark:text-white text-sm">Validación de Red</p>
+                                <p className="text-[10px] text-slate-400 font-medium">Check de salud y base de datos</p>
+                            </div>
+                        </div>
+                        <ChevronRight size={18} className="text-slate-300" />
                     </button>
 
                     <button onClick={() => setSettingsTab('categories')} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between group shadow-sm">
@@ -191,6 +219,92 @@ const SettingsTab = ({
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {/* VALIDATION TAB */}
+            {settingsTab === 'validation' && (
+                <div className="space-y-6 animate-in slide-in-from-right-10">
+                    <div className="flex items-center gap-3 mb-2">
+                        <button onClick={() => setSettingsTab('menu')} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-400 transition-colors"><ChevronLeft size={20} /></button>
+                        <h2 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Validación de Red</h2>
+                    </div>
+
+                    <div className="p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl space-y-6">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h3 className="font-bold text-slate-700 dark:text-white">Estado del Servidor</h3>
+                                <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mt-1">Conectividad en Tiempo Real</p>
+                            </div>
+                            <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${healthStatus?.status === 'healthy' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                {healthStatus?.status?.toUpperCase() || 'DESCONOCIDO'}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3">
+                            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                        <Database size={14} className="text-blue-500" />
+                                        <span className="text-xs font-bold dark:text-white">Base de Datos</span>
+                                    </div>
+                                    <span className={`w-2 h-2 rounded-full ${healthStatus?.database === 'connected' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 animate-pulse'}`} />
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-[10px]">
+                                        <span className="text-slate-400 uppercase font-bold">Respuesta</span>
+                                        <span className="font-mono font-bold dark:text-slate-300">{healthStatus?.latency || '--'}</span>
+                                    </div>
+                                    {healthStatus?.error && (
+                                        <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-900/30">
+                                            <p className="text-[10px] text-red-600 dark:text-red-400 font-mono leading-relaxed break-all">
+                                                {healthStatus.error}
+                                                {healthStatus.prismaError && <span className="block mt-1 opacity-60">Prisma Code: {healthStatus.prismaError}</span>}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Cpu size={14} className="text-indigo-500" />
+                                    <span className="text-xs font-bold dark:text-white">Entorno</span>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-[10px]">
+                                        <span className="text-slate-400 uppercase font-bold">Node Env</span>
+                                        <span className="font-mono font-bold dark:text-slate-300">{healthStatus?.env?.node_env || '--'}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[10px]">
+                                        <span className="text-slate-400 uppercase font-bold">DB URL Configurada</span>
+                                        <span className={`font-bold ${healthStatus?.env?.db_url_set ? 'text-green-500' : 'text-red-500'}`}>{healthStatus?.env?.db_url_set ? 'SÍ' : 'NO'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => checkHealth()}
+                            disabled={isCheckingHealth}
+                            className={`w-full py-4 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-2xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 ${isCheckingHealth ? 'opacity-50' : ''}`}
+                        >
+                            {isCheckingHealth ? <Repeat size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                            {isCheckingHealth ? 'Validando...' : 'Re-validar Conexión'}
+                        </button>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
+                        <div className="flex gap-3">
+                            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg h-fit"><AlertCircle size={16} /></div>
+                            <div>
+                                <p className="text-xs font-bold text-blue-800 dark:text-blue-300">¿Sigues viendo OFFLINE?</p>
+                                <p className="text-[10px] text-blue-600/80 dark:text-blue-400/80 mt-1 leading-relaxed">
+                                    Suele pasar si el contenedor de la DB no está en la misma red Docker que la App. Verifica que el puerto 5432 esté expuesto.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

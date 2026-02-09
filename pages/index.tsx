@@ -67,7 +67,7 @@ export default function App() {
     const [inputModal, setInputModal] = useState<{ open: boolean, title: string, placeholder: string, value: string, catId: string } | null>(null);
     const [showListHelp, setShowListHelp] = useState(false);
     const [showHeader, setShowHeader] = useState(true);
-    const [settingsTab, setSettingsTab] = useState<'menu' | 'themes' | 'import' | 'categories' | 'info'>('menu');
+    const [settingsTab, setSettingsTab] = useState<'menu' | 'themes' | 'import' | 'categories' | 'info' | 'validation'>('menu');
     const [currentUser, setCurrentUser] = useState<string>('');
     const [showUserModal, setShowUserModal] = useState(false);
 
@@ -106,6 +106,23 @@ export default function App() {
     }, [activeTab]);
 
 
+    // DB Status & Health
+    const [healthStatus, setHealthStatus] = useState<any>(null);
+    const [isCheckingHealth, setIsCheckingHealth] = useState(false);
+
+    const checkHealth = async () => {
+        setIsCheckingHealth(true);
+        try {
+            const res = await fetch('/api/health');
+            const data = await res.json();
+            setHealthStatus(data);
+        } catch (e: any) {
+            setHealthStatus({ status: 'error', error: e.message || "Failed to fetch health" });
+        } finally {
+            setIsCheckingHealth(false);
+        }
+    };
+
     const showToast = (msg: string, type: 'success' | 'error' | 'info' = 'success') => {
         setToast({ msg, type });
         setTimeout(() => setToast(null), 3000);
@@ -143,6 +160,7 @@ export default function App() {
 
     useEffect(() => {
         loadData();
+        checkHealth();
     }, []);
 
     // Removed auto-clear effect to allow chart navigation to persist expansion
@@ -863,6 +881,9 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                             currentUser={currentUser}
                             setCurrentUser={handleSetUser}
                             onResetDevice={handleResetDevice}
+                            healthStatus={healthStatus}
+                            checkHealth={checkHealth}
+                            isCheckingHealth={isCheckingHealth}
                         />
                     )}
                 </main>
