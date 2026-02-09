@@ -50,6 +50,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Copy full production node_modules (restores Prisma CLI functionality)
 COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 # Copy entrypoint script
 COPY --chown=nextjs:nodejs ./entrypoint.sh ./entrypoint.sh
