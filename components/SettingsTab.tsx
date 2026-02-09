@@ -1,4 +1,4 @@
-import { ChevronRight, ChevronLeft, Moon, Sun, UploadCloud, Grid, AlertCircle, Plus, Edit3, Trash2, X, Heart, User, Activity, Cpu, Database, RefreshCw, Repeat } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Moon, Sun, UploadCloud, Grid, AlertCircle, Plus, Edit3, Trash2, X, Heart, User, Activity, Cpu, Database, RefreshCw, Repeat, ChevronUp, ChevronDown } from 'lucide-react';
 import { Category } from '@/types';
 import { ICON_LIB, COLORS_LIB } from '@/lib/icons';
 
@@ -166,6 +166,18 @@ const SettingsTab = ({
                             <div className="text-left">
                                 <div className="font-bold text-sm text-slate-200">Modo Oscuro</div>
                                 <div className="text-[10px] text-slate-500 font-bold uppercase">Interfaz moderna</div>
+                            </div>
+                        </button>
+                        <button
+                            onClick={toggleAutoHideHeader}
+                            className={`flex items-center gap-4 p-5 rounded-3xl border-2 transition-all ${autoHideHeader ? 'bg-slate-900 border-blue-500 shadow-xl' : 'bg-white border-slate-100'}`}
+                        >
+                            <div className={`p-3 rounded-2xl ${autoHideHeader ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                {autoHideHeader ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                            </div>
+                            <div className="text-left">
+                                <div className={`font-bold text-sm ${autoHideHeader ? 'text-white' : 'text-slate-700'}`}>Ocultar Menú Automáticamente</div>
+                                <div className="text-[10px] text-slate-500 font-bold uppercase">{autoHideHeader ? 'Activado (30 seg)' : 'Desactivado (Siempre visible)'}</div>
                             </div>
                         </button>
                     </div>
@@ -337,7 +349,7 @@ const SettingsTab = ({
                             <div className="flex gap-2">
                                 <div className="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-full flex items-center gap-2 border border-red-100 dark:border-red-900/50">
                                     <Heart size={12} className="fill-current" />
-                                    <span className="text-[9px] font-black uppercase tracking-tight">Premium v1.2.0</span>
+                                    <span className="text-[9px] font-black uppercase tracking-tight">Premium v1.2.1</span>
                                 </div>
                             </div>
                         </div>
