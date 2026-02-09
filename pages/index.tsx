@@ -92,10 +92,30 @@ export default function App() {
         window.location.reload();
     };
 
+    const [autoHideHeader, setAutoHideHeader] = useState(true);
+
     useEffect(() => {
+        const storedAutoHide = localStorage.getItem('fin_auto_hide_header');
+        if (storedAutoHide !== null) {
+            setAutoHideHeader(storedAutoHide === 'true');
+        }
+    }, []);
+
+    const toggleAutoHideHeader = () => {
+        const newVal = !autoHideHeader;
+        setAutoHideHeader(newVal);
+        localStorage.setItem('fin_auto_hide_header', String(newVal));
+        if (!newVal) setShowHeader(true);
+    };
+
+    useEffect(() => {
+        if (!autoHideHeader) {
+            setShowHeader(true);
+            return;
+        }
         const timer = setTimeout(() => setShowHeader(false), 30000);
         return () => clearTimeout(timer);
-    }, []);
+    }, [autoHideHeader, activeTab]); // Reset timer on tab change too if desired, or just autoHideHeader
 
     useEffect(() => {
         if (activeTab === 'list') {
@@ -884,6 +904,8 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                             healthStatus={healthStatus}
                             checkHealth={checkHealth}
                             isCheckingHealth={isCheckingHealth}
+                            autoHideHeader={autoHideHeader}
+                            toggleAutoHideHeader={toggleAutoHideHeader}
                         />
                     )}
                 </main>
@@ -920,7 +942,32 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                         <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center animate-in fade-in">
                             <div className="bg-white dark:bg-slate-900 w-full sm:w-[90%] rounded-t-3xl sm:rounded-3xl p-6 h-[85vh] sm:h-auto flex flex-col animate-in slide-in-from-bottom-10">
                                 <div className="flex justify-between items-center mb-4"><h2 className="font-bold text-lg dark:text-white flex items-center gap-2"><UploadCloud className="text-blue-500" /> Importador IA</h2><button onClick={() => setShowBulkModal(false)} aria-label="Cerrar importador" title="Cerrar ventana"><X className="dark:text-white" /></button></div>
-                                <div className="flex-1 overflow-y-auto space-y-4"><div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-3xl border border-indigo-100 dark:border-indigo-800"><div className="flex justify-between items-start mb-2"><label className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">1. Prompt</label><button onClick={copyPrompt} aria-label="Copiar prompt IA" title="Copiar al portapapeles" className={`text-xs px-3 py-1.5 rounded-full font-bold ${isCopied ? 'bg-green-500 text-white' : 'bg-indigo-200 dark:bg-indigo-800 text-indigo-700'}`}>{isCopied ? '¡Copiado!' : 'Copiar'}</button></div><p className="font-mono text-[10px] text-slate-600 dark:text-slate-300 p-2 bg-white dark:bg-slate-950 rounded border border-indigo-100 dark:border-indigo-900/50 whitespace-pre-wrap">{getAiPrompt()}</p></div><div><label htmlFor="csv-input" className="text-xs font-bold text-slate-400 uppercase mb-2 block">2. Pegar CSV</label><textarea id="csv-input" value={csvText} onChange={(e) => setCsvText(e.target.value)} title="Entrada de datos CSV" className="w-full h-32 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 text-xs font-mono dark:text-white" placeholder="Pegar aquí..."></textarea></div><button onClick={handleBulkImport} aria-label="Procesar datos pegados" title="Ejecutar importación" className="w-full py-4 bg-blue-600 text-white font-bold rounded-full">Procesar</button></div>
+                                <div className="flex-1 overflow-y-auto space-y-4">
+                                    <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-3xl border border-indigo-100 dark:border-indigo-800">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <label className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">1. Prompt</label>
+                                            <button
+                                                onClick={(e) => { e.preventDefault(); copyPrompt(); }}
+                                                type="button"
+                                                aria-label="Copiar prompt IA"
+                                                title="Copiar al portapapeles"
+                                                className={`text-xs px-3 py-1.5 rounded-full font-bold transition-all active:scale-95 ${isCopied ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : 'bg-white text-indigo-600 border border-indigo-200 shadow-sm hover:bg-indigo-50'}`}
+                                            >
+                                                {isCopied ? '¡Copiado!' : 'Copiar Texto'}
+                                            </button>
+                                        </div>
+                                        <div className="relative group">
+                                            <pre className="font-mono text-[10px] text-slate-600 dark:text-slate-300 p-3 bg-white dark:bg-slate-950 rounded-xl border border-indigo-100 dark:border-indigo-900/50 whitespace-pre-wrap select-all">
+                                                {getAiPrompt()}
+                                            </pre>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="csv-input" className="text-xs font-bold text-slate-400 uppercase mb-2 block">2. Pegar CSV</label>
+                                        <textarea id="csv-input" value={csvText} onChange={(e) => setCsvText(e.target.value)} title="Entrada de datos CSV" className="w-full h-32 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 text-xs font-mono dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="Pegar aquí..."></textarea>
+                                    </div>
+                                    <button onClick={handleBulkImport} aria-label="Procesar datos pegados" title="Ejecutar importación" className="w-full py-4 bg-blue-600 text-white font-bold rounded-full shadow-lg shadow-blue-600/30 active:scale-95 transition-transform">Procesar</button>
+                                </div>
                             </div>
                         </div>
                     )

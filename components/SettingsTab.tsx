@@ -19,6 +19,8 @@ interface SettingsTabProps {
     healthStatus: any;
     checkHealth: () => void;
     isCheckingHealth: boolean;
+    autoHideHeader: boolean;
+    toggleAutoHideHeader: () => void;
 }
 
 const SettingsTab = ({
@@ -37,7 +39,9 @@ const SettingsTab = ({
     onResetDevice,
     healthStatus,
     checkHealth,
-    isCheckingHealth
+    isCheckingHealth,
+    autoHideHeader,
+    toggleAutoHideHeader
 }: SettingsTabProps) => {
     return (
         <div className="pt-4 px-4 pb-4 animate-in slide-in-from-right-10">
@@ -333,7 +337,7 @@ const SettingsTab = ({
                             <div className="flex gap-2">
                                 <div className="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-full flex items-center gap-2 border border-red-100 dark:border-red-900/50">
                                     <Heart size={12} className="fill-current" />
-                                    <span className="text-[9px] font-black uppercase tracking-tight">Premium v1.1.9</span>
+                                    <span className="text-[9px] font-black uppercase tracking-tight">Premium v1.2.0</span>
                                 </div>
                             </div>
                         </div>
