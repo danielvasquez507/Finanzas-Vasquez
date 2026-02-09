@@ -21,6 +21,13 @@ RUN npx prisma generate
 # Build Next.js
 RUN npm run build
 
+# Stage for production dependencies (excludes devDeps like eslint, typescript)
+# This ensures we have a clean node_modules including 'prisma' CLI but without bloat
+FROM node:20-bullseye-slim AS prod-deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+
 # Production image, copy all the files and run next
 FROM node:20-bullseye-slim AS runner
 WORKDIR /app
@@ -40,12 +47,9 @@ RUN mkdir -p /app/db_data && chown nextjs:nodejs /app/db_data
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-# Solo copiamos el CLI y el engine necesario para migraciones
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/client ./node_modules/@prisma/client
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/engines/libquery_engine-debian-openssl-1.1.x.so.node ./node_modules/@prisma/engines/
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/engines/schema-engine-debian-openssl-1.1.x.so.node ./node_modules/@prisma/engines/
+
+# Copy full production node_modules (restores Prisma CLI functionality)
+COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 # Copy entrypoint script
 COPY --chown=nextjs:nodejs ./entrypoint.sh ./entrypoint.sh
