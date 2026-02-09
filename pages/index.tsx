@@ -226,22 +226,28 @@ export default function App() {
         try {
             updatePendingCount();
 
-            // 1. Load from Cache first (Instant render)
-            const cachedTxsIdx = localStorage.getItem('cache_transactions');
-            const cachedCatsIdx = localStorage.getItem('cache_categories');
-            const cachedRecsIdx = localStorage.getItem('cache_recurring');
+            // 1. Load from Cache first (Instant render) - REMOVED BY REQUEST
+            // const cachedTxsIdx = localStorage.getItem('cache_transactions');
+            // const cachedCatsIdx = localStorage.getItem('cache_categories');
+            // const cachedRecsIdx = localStorage.getItem('cache_recurring');
 
-            let loadedTxs: Transaction[] = cachedTxsIdx ? JSON.parse(cachedTxsIdx) : [];
-            let loadedCats: Category[] = cachedCatsIdx ? JSON.parse(cachedCatsIdx) : [];
-            let loadedRecs: RecurringItem[] = cachedRecsIdx ? JSON.parse(cachedRecsIdx) : [];
+            // let loadedTxs: Transaction[] = []; // cachedTxsIdx ? JSON.parse(cachedTxsIdx) : [];
+            // let loadedCats: Category[] = []; // cachedCatsIdx ? JSON.parse(cachedCatsIdx) : [];
+            // let loadedRecs: RecurringItem[] = []; // cachedRecsIdx ? JSON.parse(cachedRecsIdx) : [];
 
             // Apply queue to cached data
-            const queue = getSyncQueue();
-            const { newTxs, newCats, newRecs } = applyQueueToData(loadedTxs, loadedCats, loadedRecs, queue);
+            // const queue = getSyncQueue();
+            // const { newTxs, newCats, newRecs } = applyQueueToData(loadedTxs, loadedCats, loadedRecs, queue);
 
-            setTransactions(newTxs);
-            setCategories(newCats);
-            setRecurring(newRecs);
+            // setTransactions(newTxs);
+            // setCategories(newCats);
+            // setRecurring(newRecs);
+
+            // Just apply queue to empty state initially if we want, or just wait for fetch
+            // For now, initializing empty to comply with "no offline loading" request
+            setTransactions([]);
+            setCategories([]);
+            setRecurring([]);
 
             // 2. Try to fetch fresh data if online
             if (dbStatus === 'online') {
@@ -1421,7 +1427,7 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                                     ))}
                                 </div>
 
-                                <p className="text-center text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Finanzas Vásquez Pro v2.1</p>
+                                <p className="text-center text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Finanzas Vásquez Pro v2.2</p>
                             </div>
                         </div>
                     )
