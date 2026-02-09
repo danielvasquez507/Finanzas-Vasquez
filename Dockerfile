@@ -27,6 +27,8 @@ FROM node:20-bullseye-slim AS prod-deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --only=production
+# Generate Prisma Client for production
+RUN npx prisma generate
 
 # Production image, copy all the files and run next
 FROM node:20-bullseye-slim AS runner
