@@ -40,9 +40,12 @@ RUN mkdir -p /app/db_data && chown nextjs:nodejs /app/db_data
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+# Solo copiamos el CLI y el engine necesario para migraciones
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/engines ./node_modules/@prisma/engines
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/engines/libquery_engine-debian-openssl-1.1.x.so.node ./node_modules/@prisma/engines/
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/engines/schema-engine-debian-openssl-1.1.x.so.node ./node_modules/@prisma/engines/
 
 # Copy entrypoint script
 COPY --chown=nextjs:nodejs ./entrypoint.sh ./entrypoint.sh
