@@ -28,6 +28,7 @@ WORKDIR /app
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV DATABASE_URL="file:/app/db_data/dev.db"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
