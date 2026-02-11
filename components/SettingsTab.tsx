@@ -454,7 +454,7 @@ const SettingsTab = ({
                                 </div>
                             </div>
 
-                            <div className="w-full space-y-3">
+                            <div className="w-full space-y-4">
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl w-full text-center border border-slate-100 dark:border-slate-800 backdrop-blur-sm relative overflow-hidden group/card">
                                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/card:opacity-30 transition-opacity">
                                         <Heart size={40} className="text-blue-500 fill-current" />
