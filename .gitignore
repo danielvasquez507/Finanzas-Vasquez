@@ -13,3 +13,15 @@ out
 db-data
 /generated/prisma
 
+
+# Agent and Planning
+.agent/
+*.md
+!README.md
+*.pdf
+*.txt
+
+# Logs
+stderr.txt
+stdout.txt
+temp_out.txt
