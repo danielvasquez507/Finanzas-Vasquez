@@ -50,3 +50,20 @@ input[type=number] {
 .dynamic-bar {
   width: var(--progress-width, 0%);
 }
+
+/* Custom Animations */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite ease-in-out;
+}
+
+@keyframes pulse-fade {
+  0%, 100% { opacity: 0.2; transform: scale(0.95); }
+  50% { opacity: 0.5; transform: scale(1.05); }
+}
+.animate-pulse-fade {
+  animation: pulse-fade 3s infinite ease-in-out;
+}
