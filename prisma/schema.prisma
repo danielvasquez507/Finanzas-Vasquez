@@ -20,6 +20,7 @@ model Transaction {
   notes       String?
   isPaid      Boolean  @default(false)
   week        String   // YYYY-WW format
+  owner       String   @default("Daniel")
   createdAt   DateTime @default(now())
   deletedAt   DateTime?
 }
@@ -50,5 +51,12 @@ model AuditLog {
   entity    String   // Name of the table
   entityId  String   // ID of the affected record (converted to string)
   details   String?  // Optional JSON details
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  color     String?
   createdAt DateTime @default(now())
 }

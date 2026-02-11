@@ -14,6 +14,7 @@ export interface RecurringItem {
     owner: string;
     category?: string;
     sub?: string;
+    deletedAt?: string;
 }
 
 export interface Transaction {
@@ -25,4 +26,5 @@ export interface Transaction {
     notes: string;
     isPaid: boolean;
     week: string;
+    owner: string;
 }

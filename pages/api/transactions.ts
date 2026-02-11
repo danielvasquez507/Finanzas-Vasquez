@@ -43,7 +43,7 @@ export default async function handler(
         }
     } else if (req.method === 'POST') {
         try {
-            const { id, date, category, sub, amount, notes, week, isPaid, updatedBy } = req.body;
+            const { id, date, category, sub, amount, notes, week, isPaid, owner, updatedBy } = req.body;
             const dateObj = parseLocalDate(date);
             const weekStr = week || getWeekRangeStr(dateObj);
 
@@ -55,7 +55,8 @@ export default async function handler(
                 amount: parseFloat(amount),
                 notes,
                 week: weekStr,
-                isPaid: isPaid || false
+                isPaid: isPaid || false,
+                owner: owner || 'Daniel'
             };
 
             let finalTx;
@@ -88,9 +89,8 @@ export default async function handler(
     } else if (req.method === 'DELETE') {
         const { id, user: updatedBy } = req.query;
         try {
-            // Soft Delete
             await prisma.transaction.update({
-                where: { id: id as any },
+                where: { id: id as string },
                 data: { deletedAt: new Date() }
             });
 
@@ -98,7 +98,7 @@ export default async function handler(
                 data: {
                     action: 'DELETE',
                     entity: 'Transaction',
-                    entityId: id.toString(),
+                    entityId: id as string,
                     details: JSON.stringify({ message: 'Soft deleted via API', updatedBy })
                 }
             });
@@ -110,12 +110,12 @@ export default async function handler(
     } else if (req.method === 'PUT') {
         const { id } = req.query;
         try {
-            const { date, category, sub, amount, notes, isPaid, updatedBy } = req.body;
+            const { date, category, sub, amount, notes, isPaid, owner, updatedBy } = req.body;
             const dateObj = parseLocalDate(date);
             const weekStr = getWeekRangeStr(dateObj);
 
             const updatedTx = await prisma.transaction.update({
-                where: { id: id as any },
+                where: { id: id as string },
                 data: {
                     date: dateObj,
                     category,
@@ -123,7 +123,8 @@ export default async function handler(
                     amount: parseFloat(amount),
                     notes,
                     isPaid,
-                    week: weekStr
+                    week: weekStr,
+                    owner: owner
                 },
             });
 
@@ -131,7 +132,7 @@ export default async function handler(
                 data: {
                     action: 'UPDATE',
                     entity: 'Transaction',
-                    entityId: id.toString(),
+                    entityId: id as string,
                     details: JSON.stringify({ amount, category, updatedBy })
                 }
             });
@@ -140,7 +141,8 @@ export default async function handler(
         } catch (error) {
             res.status(500).json({ error: 'Failed to update transaction' });
         }
-    } else {
+    }
+    else {
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }

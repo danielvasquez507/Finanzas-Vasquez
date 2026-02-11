@@ -46,6 +46,7 @@ export default function App() {
 
     // Filtros de Tiempo
     const [dashFilter, setDashFilter] = useState<'week' | 'month' | 'year'>('week');
+    const [dashUserFilter, setDashUserFilter] = useState<string>('all');
     const [viewDate, setViewDate] = useState(new Date());
 
     // Filtro de Pantalla Movimientos
@@ -70,6 +71,36 @@ export default function App() {
     const [settingsTab, setSettingsTab] = useState<'menu' | 'themes' | 'categories' | 'info' | 'validation'>('menu');
     const [currentUser, setCurrentUser] = useState<string>('');
     const [showUserModal, setShowUserModal] = useState(false);
+    const [users, setUsers] = useState<{ id: string, name: string, color?: string }[]>([]);
+
+    const fetchUsers = async () => {
+        try {
+            const res = await fetch('/api/users');
+            const data = await res.json();
+            if (data.length === 0) {
+                // Initial Seed if no users found
+                const initial = ['Daniel', 'Gedalya'];
+                for (const name of initial) {
+                    await fetch('/api/users', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, color: 'blue' })
+                    });
+                }
+                const res2 = await fetch('/api/users');
+                const data2 = await res2.json();
+                setUsers(data2);
+            } else {
+                setUsers(data);
+            }
+        } catch (e) {
+            console.error("Error fetching users", e);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('fin_user');
@@ -232,6 +263,7 @@ export default function App() {
     const [selectedCat, setSelectedCat] = useState<Category | null>(null);
     const [subCat, setSubCat] = useState('');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [inputOwner, setInputOwner] = useState<string>('Daniel');
 
     const [notes, setNotes] = useState('');
 
@@ -306,6 +338,7 @@ export default function App() {
             notes,
             isPaid: false,
             week: formatDateRange(week.start, week.end),
+            owner: inputOwner,
             updatedBy: currentUser
         };
 
@@ -501,13 +534,20 @@ export default function App() {
             });
 
             if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.message || 'API Error');
+                const text = await res.text();
+                let errorMsg = 'API Error';
+                try {
+                    const data = JSON.parse(text);
+                    errorMsg = data.error || data.message || errorMsg;
+                } catch (e) {
+                    errorMsg = text || errorMsg;
+                }
+                throw new Error(errorMsg);
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error("Error saving recurring", e);
             // Revert optimistic update if needed, but for now just warn
-            showToast("Error de sincronización (los datos pueden no haberse guardado)", 'error');
+            showToast(`Error de sincronización: ${e.message}`, 'error');
         }
     };
 
@@ -608,32 +648,50 @@ export default function App() {
         return transactions.filter(t => {
             const txDate = safeDate(t.date);
             const currentView = new Date(viewDate);
-            if (dashFilter === 'year') return txDate.getFullYear() === currentView.getFullYear();
-            if (dashFilter === 'month') return txDate.getMonth() === currentView.getMonth() && txDate.getFullYear() === currentView.getFullYear();
-            const txWeek = getWeekRange(txDate);
-            const viewWeek = getWeekRange(currentView);
-            return txWeek.start.getTime() === viewWeek.start.getTime();
+
+            // Time Filter
+            let timeMatch = false;
+            if (dashFilter === 'year') timeMatch = txDate.getFullYear() === currentView.getFullYear();
+            else if (dashFilter === 'month') timeMatch = txDate.getMonth() === currentView.getMonth() && txDate.getFullYear() === currentView.getFullYear();
+            else {
+                const txWeek = getWeekRange(txDate);
+                const viewWeek = getWeekRange(currentView);
+                timeMatch = txWeek.start.getTime() === viewWeek.start.getTime();
+            }
+            if (!timeMatch) return false;
+
+            // User Filter
+            if (dashUserFilter === 'all') return true;
+            return t.owner === dashUserFilter || t.owner === 'Ambos';
         });
     };
 
     const getChartData = () => {
-        const data = getFilteredData();
+        // Filter out Income for the Expense Chart
+        const expenseData = getFilteredData().filter(t => t.category !== 'Ingreso' && t.category !== 'Ingresos');
         const totals: any = {};
         let totalSum = 0;
-        data.forEach(t => {
-            totals[t.category] = (totals[t.category] || 0) + t.amount;
-            totalSum += t.amount;
+
+        expenseData.forEach(t => {
+            let effectiveAmount = t.amount;
+
+            // Special handling for "Ambos" when filtering by a specific user
+            if (dashUserFilter !== 'all' && t.owner === 'Ambos') {
+                // Split ONLY between Daniel and Gedalya
+                const couple = ['Daniel', 'Gedalya'];
+                if (couple.includes(dashUserFilter)) {
+                    // If the selected user is part of the couple, they get half
+                    effectiveAmount = t.amount / 2;
+                } else {
+                    // If the selected user is NOT part of the couple (e.g. Eliam), they get 0 of "Ambos"
+                    effectiveAmount = 0;
+                }
+            }
+
+            totals[t.category] = (totals[t.category] || 0) + effectiveAmount;
+            totalSum += effectiveAmount;
         });
         const sorted = Object.entries(totals).sort((a: any, b: any) => b[1] - a[1]).map(([name, val]: any) => ({ name, val }));
-
-        // Personalizar orden de gráficos según usuario logueado
-        if (currentUser) {
-            // Este bloque afecta el orden de visualización si tuviéramos gráficos por persona.
-            // Dado que el gráfico actual es por categoría, la solicitud del usuario de "gráficos de la persona logueada"
-            // se interpreta mejor en los Totales de Fijos (ya implementado) o si desglosamos el gráfico principal.
-            // Por ahora, filtraremos la vista de 'Resumen' si se requiere, pero el usuario pidió "visualizar los gráficos...".
-            // Asumiremos que se refiere al orden de los bloques en RecurringTab o una futura implementación de gráficos por usuario.
-        }
 
         return { sorted, totalSum };
     };
@@ -885,9 +943,9 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
     return (
         <div className={`h-[100dvh] w-full flex flex-col font-sans transition-colors duration-300 ${darkMode ? 'dark bg-slate-950' : 'bg-slate-100'}`}>
             <Head>
-                <title>Finanzas Vásquez</title>
+                <title>Finanzas App</title>
                 <meta name="description" content="Control de gastos familiares" />
-                <link rel="icon" href="/logo.svg" />
+                <link rel="icon" href="/logo_192.png" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
             </Head>
 
@@ -900,9 +958,9 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src="/logo.svg" alt="Logo" className="h-8 w-auto cursor-pointer" onClick={() => setShowHeader(true)} />
+                            <img src="/logo_192.png" alt="Logo" className="h-8 w-auto cursor-pointer" onClick={() => setShowHeader(true)} />
                             <h1 className="text-sm font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text hidden sm:block">
-                                Finanzas Vásquez
+                                Finanzas App
                             </h1>
                         </div>
                         {/* Desktop Nav */}
@@ -934,6 +992,9 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                         <DashboardTab
                             dashFilter={dashFilter}
                             setDashFilter={setDashFilter}
+                            dashUserFilter={dashUserFilter}
+                            setDashUserFilter={setDashUserFilter}
+                            users={users}
                             viewDate={viewDate}
                             navigateTime={navigateTime}
                             getTimeLabel={getTimeLabel}
@@ -946,15 +1007,22 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                     {/* FIJOS (RECURRENTES) */}
                     {activeTab === 'recurring' && (
                         <RecurringTab
-                            recurringTab={recurringTab}
-                            setRecurringTab={setRecurringTab}
-                            recStats={recStats}
-                            recList={recList}
-                            openEditRecModal={openEditRecModal}
-                            handleDeleteRecurring={handleDeleteRecurring}
-                            openNewRecModal={openNewRecModal}
-                            handleApplySelected={handleApplySelected}
+                            recurring={recurring}
+                            setRecurring={setRecurring}
                             currentUser={currentUser}
+                            onEdit={(item) => {
+                                setEditingRecurring(item.id ? item : null);
+                                setRecName(item.name);
+                                setRecAmount(item.id ? item.amount.toString() : '');
+                                setRecType(item.type as 'income' | 'expense');
+                                setRecOwner(item.owner);
+                                setRecCategory(item.category || '');
+                                setRecSub(item.sub || '');
+                                setShowRecModal(true);
+                            }}
+                            onDelete={handleDeleteRecurring}
+                            onApplySelected={handleApplySelected}
+                            users={users}
                             categories={categories}
                         />
                     )}
@@ -975,6 +1043,9 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                             notes={notes}
                             setNotes={setNotes}
                             handleSave={handleSave}
+                            inputOwner={inputOwner}
+                            setInputOwner={setInputOwner}
+                            users={users}
                         />
                     )}
 
@@ -999,28 +1070,31 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                         <SettingsTab
                             settingsTab={settingsTab}
                             setSettingsTab={setSettingsTab}
+                            categories={categories}
+                            onEditCategory={setEditingCategory}
+                            onDeleteCategory={handleDeleteCategory}
+                            onAddCategory={() => setEditingCategory({ id: '', name: '', iconKey: 'ShoppingCart', color: 'bg-blue-500 text-white', subs: [] })}
+                            onResetDevice={handleResetDevice}
+                            healthStatus={healthStatus}
+                            isCheckingHealth={isCheckingHealth}
+                            checkHealth={checkHealth}
+                            autoHideHeader={autoHideHeader}
+                            toggleAutoHideHeader={toggleAutoHideHeader}
+                            users={users}
+                            refreshUsers={fetchUsers}
                             darkMode={darkMode}
                             setDarkMode={setDarkMode}
                             setShowBulkModal={setShowBulkModal}
-                            categories={categories}
-                            setEditingCategory={setEditingCategory}
-                            handleDeleteCategory={handleDeleteCategory}
-                            handleDeleteSubcategory={handleDeleteSubcategory}
-                            setInputModal={setInputModal}
+                            onDeleteSubcategory={handleDeleteSubcategory}
+                            onSetInputModal={setInputModal}
                             currentUser={currentUser}
-                            setCurrentUser={handleSetUser}
-                            onResetDevice={handleResetDevice}
-                            healthStatus={healthStatus}
-                            checkHealth={checkHealth}
-                            isCheckingHealth={isCheckingHealth}
-                            autoHideHeader={autoHideHeader}
-                            toggleAutoHideHeader={toggleAutoHideHeader}
+                            setCurrentUser={setCurrentUser}
                         />
                     )}
                 </main>
 
                 {/* --- NAVBAR --- */}
-                <nav className={`flex-none md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-around items-center z-30 transition-transform duration-300 ${isKeyboardOpen ? 'translate-y-full' : 'translate-y-0'}`}>
+                <nav className={`flex-none md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-around items-center z-30 transition-transform duration-300 pb-safe translate-y-0`}>
                     <button onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center p-2 ${activeTab === 'dashboard' ? 'text-blue-600' : 'text-slate-400'}`}><PieChart size={24} /><span className="text-[10px] font-bold mt-1">Inicio</span></button>
                     <button onClick={() => setActiveTab('recurring')} className={`flex flex-col items-center p-2 ${activeTab === 'recurring' ? 'text-blue-600' : 'text-slate-400'}`}><Repeat size={24} /><span className="text-[10px] font-bold mt-1">Fijos</span></button>
                     <button onClick={() => setActiveTab('input')} className={`flex flex-col items-center p-2 ${activeTab === 'input' ? 'text-blue-600' : 'text-slate-400'}`}><Plus size={32} className="bg-blue-600 text-white rounded-full p-1.5 shadow-lg" /></button>
@@ -1036,7 +1110,7 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                         <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
                             <div className="bg-white dark:bg-slate-900 w-full rounded-3xl p-6 shadow-2xl space-y-4">
                                 <h3 className="font-bold text-lg dark:text-white">{editingRecurring ? 'Editar' : 'Nuevo'} Recurrente</h3>
-                                <div className="flex gap-2"><button onClick={() => setRecType('income')} aria-label="Cambiar a tipo ingreso" title="Marcar como ingreso" className={`flex-1 py-2 rounded-lg text-xs font-bold border ${recType === 'income' ? 'bg-green-100 text-green-700' : 'text-slate-400'}`}>Ingreso</button><button onClick={() => setRecType('expense')} aria-label="Cambiar a tipo gasto" title="Marcar como gasto" className={`flex-1 py-2 rounded-lg text-xs font-bold border ${recType === 'expense' ? 'bg-red-100 text-red-700' : 'text-slate-400'}`}>Gasto</button></div>
+                                <div className="flex gap-2"><button onClick={() => setRecType('income')} aria-label="Cambiar a tipo ingreso" title="Marcar como ingreso" className={`flex-1 py-2 rounded-2xl text-xs font-bold border ${recType === 'income' ? 'bg-green-100 text-green-700' : 'text-slate-400'}`}>Ingreso</button><button onClick={() => setRecType('expense')} aria-label="Cambiar a tipo gasto" title="Marcar como gasto" className={`flex-1 py-2 rounded-2xl text-xs font-bold border ${recType === 'expense' ? 'bg-red-100 text-red-700' : 'text-slate-400'}`}>Gasto</button></div>
                                 <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1 block" htmlFor="rec-name">Concepto</label><input id="rec-name" type="text" aria-label="Concepto" title="Nombre del concepto" value={recName} onChange={e => setRecName(e.target.value)} placeholder="Ej: Salario" className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl dark:text-white" /></div>
                                 <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1 block" htmlFor="rec-amount">Monto</label><input id="rec-amount" type="number" aria-label="Monto" title="Cantidad económica" value={recAmount} onChange={e => setRecAmount(e.target.value)} placeholder="0.00" className="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl dark:text-white" /></div>
 
@@ -1077,7 +1151,17 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                                     </div>
                                 )}
 
-                                <div className="flex gap-2">{OWNERS.map(o => <button key={o} onClick={() => setRecOwner(o)} aria-label={`Asignar registro a ${o}`} title={`Responsable: ${o}`} className={`flex-1 py-2 rounded-lg text-xs border ${recOwner === o ? 'bg-blue-50 border-blue-500 text-blue-600' : 'text-slate-400'}`}>{o}</button>)}</div>
+                                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                                    {users.map(u => (
+                                        <button
+                                            key={u.name}
+                                            onClick={() => setRecOwner(u.name)}
+                                            className={`px-4 py-2 rounded-2xl text-xs font-bold border whitespace-nowrap ${recOwner === u.name ? 'bg-blue-50 border-blue-500 text-blue-600' : 'text-slate-400 border-slate-200 dark:border-slate-800'}`}
+                                        >
+                                            {u.name}
+                                        </button>
+                                    ))}
+                                </div>
                                 <button onClick={handleSaveRecurring} aria-label="Guardar registro fijo" title="Confirmar y guardar" className="w-full py-3 bg-blue-600 text-white rounded-full font-bold">Guardar</button>
                                 <button onClick={() => setShowRecModal(false)} aria-label="Cancelar cambios" title="Cerrar modal" className="w-full py-2 text-slate-400 text-xs text-center border-t border-transparent hover:text-slate-600 transition-colors">Cancelar</button>
                             </div>
@@ -1369,28 +1453,28 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                                 <div className="text-center space-y-4">
                                     <div className="relative mx-auto w-24 h-24">
                                         <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-40 animate-pulse"></div>
-                                        <div className="bg-white dark:bg-slate-800 p-4 rounded-[2rem] shadow-2xl relative z-10 border-4 border-white/10 overflow-hidden w-full h-full flex items-center justify-center rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                                            <img src="/logo.svg" alt="App Logo" className="w-16 h-16 object-contain -rotate-12" />
+                                        <div className="relative z-10 w-full h-full flex items-center justify-center rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                                            <img src="/logo_192.png" alt="App Logo" className="w-24 h-24 object-contain scale-125 -rotate-12" />
                                         </div>
                                     </div>
                                     <div className="space-y-1">
-                                        <h2 className="text-2xl font-black text-white tracking-tight">Finanzas Vásquez</h2>
+                                        <h2 className="text-2xl font-black text-white tracking-tight">Finanzas App</h2>
                                         <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Selecciona tu perfil</p>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4">
-                                    {['Daniel', 'Gedalya'].map((u) => (
+                                    {users.map((user) => (
                                         <button
-                                            key={u}
-                                            onClick={() => handleSetUser(u)}
+                                            key={user.id}
+                                            onClick={() => handleSetUser(user.name)}
                                             className="group relative flex items-center gap-4 p-5 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-blue-500/50 transition-all duration-300 active:scale-95 text-left"
                                         >
                                             <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-blue-500 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                                                 <User size={24} />
                                             </div>
                                             <div>
-                                                <div className="font-bold text-white text-lg">{u}</div>
+                                                <div className="font-bold text-white text-lg">{user.name}</div>
                                                 <div className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter group-hover:text-blue-400 transition-colors">Acceder a mi cartera</div>
                                             </div>
                                             <ChevronRight size={20} className="ml-auto text-slate-600 group-hover:text-white group-hover:translate-x-1 transition-all" />
@@ -1398,7 +1482,7 @@ Devuelve SOLO el bloque CSV, sin texto adicional markdown.`;
                                     ))}
                                 </div>
 
-                                <p className="text-center text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Finanzas Vásquez Pro v2.3</p>
+                                <p className="text-center text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Finanzas App Pro v2.3</p>
                             </div>
                         </div>
                     )

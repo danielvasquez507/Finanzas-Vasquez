@@ -29,9 +29,18 @@ const ListTab = ({
     toggleGroupPaid,
     setEditingTx
 }: ListTabProps) => {
+    const [showBanner, setShowBanner] = React.useState(true);
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowBanner(false);
+        }, 10000);
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
         <div className="animate-in fade-in space-y-4 pt-4 px-4 pb-24">
-            {showListHelp && (
+            {showListHelp && showBanner && (
                 <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-xl text-[10px] text-indigo-800 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 flex gap-2 items-center animate-in slide-in-from-top-2">
                     <AlertCircle size={14} />
                     <span>Toca el círculo para marcar como pagado. Toca el gasto para editar.</span>

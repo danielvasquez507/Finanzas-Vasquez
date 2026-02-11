@@ -17,6 +17,9 @@ interface InputTabProps {
     notes: string;
     setNotes: (val: string) => void;
     handleSave: () => void;
+    inputOwner: string;
+    setInputOwner: (val: string) => void;
+    users: { id: string, name: string }[];
 }
 
 const InputTab = ({
@@ -32,7 +35,10 @@ const InputTab = ({
     setCalendarModal,
     notes,
     setNotes,
-    handleSave
+    handleSave,
+    inputOwner,
+    setInputOwner,
+    users
 }: InputTabProps) => {
     return (
         <div className="pt-4 px-4 pb-5 space-y-5 animate-in slide-in-from-right-10 h-full flex flex-col">
@@ -59,7 +65,20 @@ const InputTab = ({
                     />
                 </div>
             </div>
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 space-y-4">
+                {/* User Selector */}
+                <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                    {['Daniel', 'Gedalya', 'Ambos'].map(u => (
+                        <button
+                            key={u}
+                            onClick={() => setInputOwner(u)}
+                            className={`px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-tighter border transition-all whitespace-nowrap ${inputOwner === u ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-600/20' : 'bg-white dark:bg-slate-900 text-slate-400 border-slate-100 dark:border-slate-800'}`}
+                        >
+                            {u}
+                        </button>
+                    ))}
+                </div>
+
                 <div className="overflow-x-auto pb-2 no-scrollbar">
                     <div className="flex gap-3">
                         {categories.map(cat => (
@@ -86,8 +105,6 @@ const InputTab = ({
                                 <button
                                     key={sub}
                                     onClick={() => setSubCat(sub)}
-                                    aria-label={`Subcategoría ${sub}`}
-                                    title={`Subcategoría: ${sub}`}
                                     className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${subCat === sub ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-100 dark:border-slate-700'}`}
                                 >
                                     {sub}
@@ -96,22 +113,19 @@ const InputTab = ({
                         </div>
                     </div>
                 )}
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-2 pt-1">
                     <button
                         onClick={() => { setCalendarTarget('new'); setCalendarModal(true); }}
-                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none w-1/3 text-center active:scale-95 transition-transform"
-                        aria-label="Cambiar fecha"
+                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none w-1/3 text-center active:scale-95 transition-transform"
                     >
                         {new Date(safeDate(date)).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
                     </button>
                     <input
                         type="text"
-                        aria-label="Descripción o nota"
-                        title="Descripción"
                         placeholder="Nota..."
                         value={notes}
                         onChange={e => setNotes(e.target.value)}
-                        className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-3 text-xs font-bold outline-none dark:text-white"
+                        className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-xs font-bold outline-none dark:text-white"
                     />
                 </div>
             </div>

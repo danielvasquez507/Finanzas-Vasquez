@@ -23,7 +23,7 @@ export default async function handler(
 
             if (totalCount === 0) {
                 // Seed if empty
-                console.log('Seeding initial categories...');
+
                 for (const cat of INITIAL_CATEGORIES) {
                     try {
                         const existing = await prisma.category.findUnique({ where: { name: cat.name } });
