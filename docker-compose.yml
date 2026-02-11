@@ -2,9 +2,9 @@ version: '3.9'
 
 services:
   app:
-    container_name: finanzas_vasquez
+    container_name: finanzas_app
     # Using GitHub Container Registry image
-    image: ghcr.io/danielvasquez507/finanzas-vasquez:latest
+    image: ghcr.io/danielvasquez507/finanzasapp:latest
     restart: unless-stopped
     ports:
       - "3000:3000"
