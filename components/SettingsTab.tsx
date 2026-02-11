@@ -424,7 +424,7 @@ const SettingsTab = ({
                             <div className="flex items-center justify-center gap-2">
                                 <div className="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-full flex items-center gap-2 border border-red-100 dark:border-red-900/50">
                                     <Heart size={12} className="fill-current" />
-                                    <span className="text-[9px] font-black uppercase tracking-tight">Premium v1.3.0</span>
+                                    <span className="text-[9px] font-black uppercase tracking-tight">Premium v1.3.1</span>
                                 </div>
                             </div>
                         </div>
@@ -432,7 +432,7 @@ const SettingsTab = ({
                         <div className="w-full space-y-4">
                             <div className="flex flex-col items-center gap-2">
                                 <p className="text-[11px] font-bold text-slate-500 text-center px-8">
-                                    Versión 1.3.1 • Premium
+                                    Software desarrollado para el control inteligente de ingresos y gastos familiares.
                                 </p>
                                 <div className="flex gap-4 mt-2">
                                     <a
