@@ -411,7 +411,7 @@ const SettingsTab = ({
                         <ChevronLeft size={16} /> Volver a Ajustes
                     </button>
 
-                    <div className="flex flex-col items-center justify-center space-y-8 bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 py-12 border border-slate-100 dark:border-slate-800 shadow-xl animate-in zoom-in-95 duration-500">
+                    <div className="flex flex-col items-center justify-center space-y-4 bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 py-12 border border-slate-100 dark:border-slate-800 shadow-xl animate-in zoom-in-95 duration-500">
                         <div className="relative group">
                             <div className="absolute inset-x-[-20%] inset-y-[-20%] bg-blue-500 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-1000"></div>
                             <div className="relative z-10 w-24 h-24 flex items-center justify-center translate-y-0 group-hover:-translate-y-2 transition-transform duration-500">
