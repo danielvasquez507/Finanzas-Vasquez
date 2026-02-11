@@ -13,22 +13,23 @@ export default async function handler(
             const sanitized = items.map(i => ({ ...i, amount: Number(i.amount) }));
             res.status(200).json(sanitized);
         } catch (error) {
+            console.error('Recurring GET error:', error);
             res.status(500).json({ error: 'Failed to fetch recurring' });
         }
     } else if (req.method === 'POST') {
         try {
-            const { id, type, name, amount, owner, updatedBy } = req.body;
-            const parsedAmount = parseFloat(amount);
+            const { id, type, name, amount, owner, updatedBy, category, sub } = req.body;
 
-            if (isNaN(parsedAmount)) {
-                return res.status(400).json({ error: 'Invalid amount' });
-            }
+            let parsedAmount = parseFloat(amount);
+            if (isNaN(parsedAmount)) parsedAmount = 0;
 
             const recData = {
                 type,
                 name,
                 amount: parsedAmount,
-                owner
+                owner,
+                category: type === 'expense' ? category : null, // Only expenses have categories
+                sub: type === 'expense' ? sub : null
             };
 
             let newItem;
@@ -49,7 +50,7 @@ export default async function handler(
                     action: id ? 'UPSERT' : 'CREATE',
                     entity: 'Recurring',
                     entityId: newItem.id,
-                    details: JSON.stringify({ name, amount, type, updatedBy })
+                    details: JSON.stringify({ name, amount, type, category, sub, updatedBy })
                 }
             });
 
@@ -65,9 +66,8 @@ export default async function handler(
         const idStr = Array.isArray(id) ? id[0] : id;
 
         try {
-            // Soft Delete
             await prisma.recurring.update({
-                where: { id: idStr as any },
+                where: { id: idStr as string },
                 data: { deletedAt: new Date() }
             });
 
@@ -85,15 +85,22 @@ export default async function handler(
             res.status(500).json({ error: 'Failed to delete recurring' });
         }
     } else if (req.method === 'PUT') {
-        const { id, type, name, amount, owner, updatedBy } = req.body;
-        const parsedAmount = parseFloat(amount);
+        const { id, type, name, amount, owner, updatedBy, category, sub } = req.body;
 
-        if (isNaN(parsedAmount)) return res.status(400).json({ error: 'Invalid amount' });
+        let parsedAmount = parseFloat(amount);
+        if (isNaN(parsedAmount)) parsedAmount = 0;
 
         try {
             const updated = await prisma.recurring.update({
-                where: { id: id as any },
-                data: { type, name, amount: parsedAmount, owner }
+                where: { id: id as string },
+                data: {
+                    type,
+                    name,
+                    amount: parsedAmount,
+                    owner,
+                    category: type === 'expense' ? category : null,
+                    sub: type === 'expense' ? sub : null
+                }
             });
 
             await prisma.auditLog.create({
@@ -101,12 +108,13 @@ export default async function handler(
                     action: 'UPDATE',
                     entity: 'Recurring',
                     entityId: id.toString(),
-                    details: JSON.stringify({ name, amount, updatedBy })
+                    details: JSON.stringify({ name, amount, category, sub, updatedBy })
                 }
             });
 
             res.status(200).json({ ...updated, amount: Number(updated.amount) });
         } catch (e) {
+            console.error('Recurring PUT error:', e);
             res.status(500).json({ error: 'Update failed' });
         }
     } else {

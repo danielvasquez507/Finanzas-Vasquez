@@ -299,17 +299,6 @@ const SettingsTab = ({
                         </button>
                     </div>
 
-                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
-                        <div className="flex gap-3">
-                            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg h-fit"><AlertCircle size={16} /></div>
-                            <div>
-                                <p className="text-xs font-bold text-blue-800 dark:text-blue-300">¿Sigues viendo OFFLINE?</p>
-                                <p className="text-[10px] text-blue-600/80 dark:text-blue-400/80 mt-1 leading-relaxed">
-                                    Suele pasar si el contenedor de la DB no está en la misma red Docker que la App. Verifica que el puerto 5432 esté expuesto.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             )}
 

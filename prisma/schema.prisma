@@ -30,6 +30,8 @@ model Recurring {
   name    String
   amount  Float
   owner   String  // 'Daniel' | 'Gedalya' | 'Ambos'
+  category String? // Optional to allow migration of existing data
+  sub     String?
   deletedAt DateTime?
 }
 

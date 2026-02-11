@@ -12,6 +12,8 @@ export interface RecurringItem {
     name: string;
     amount: number;
     owner: string;
+    category?: string;
+    sub?: string;
 }
 
 export interface Transaction {
